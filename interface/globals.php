@@ -68,11 +68,12 @@ if (IS_WINDOWS) {
 }
 // Auto collect the relative html path, i.e. what you would type into the web
 // browser after the server address to get to OpenEMR.
-// This removes the leading portion of $webserver_root that it has in common with the web server's document
-// root and assigns the result to $web_root. In addition to the common case where $webserver_root is
-// /var/www/openemr and document root is /var/www, this also handles the case where document root is
-// /var/www/html and there is an Apache "Alias" command that directs /openemr to /var/www/openemr.
-$web_root = substr($webserver_root, strspn($webserver_root ^ $server_document_root, "\0"));
+
+$web_root = substr($webserver_root, strlen(realpath($_SERVER['DOCUMENT_ROOT'])));
+// Modified 2012-07-14: Sam Likins <sam.likins@wsi-services.com>
+// - realpath used to correcet for paths with symbolic links
+
+
 // Ensure web_root starts with a path separator
 if (preg_match("/^[^\/]/",$web_root)) {
  $web_root = "/".$web_root;

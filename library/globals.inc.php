@@ -636,7 +636,8 @@ $GLOBALS_METADATA = array(
       xl('Past Appointment Display Widget'),
       'num',                           // data type
       '0',                             // default = false
-      xl('A positive number will show that many past appointments on a Widget in the Patient Summary screen.')
+      xl('A positive number will show that many past appointments on a Widget in the Patient Summary screen.'
+              . 'A negative number will show the past appointments in descending order.')
     ),      
 
     'activate_ccr_ccd_report' => array(

@@ -1270,12 +1270,17 @@ expand_collapse_widget($widgetTitle, $widgetLabel, $widgetButtonLabel,
             
 	// Show PAST appointments.
 	// added by Terry Hill to allow reverse sorting of the appointments
-	$direction = "ASC";
+ 	$direction = "ASC";
 	if ($GLOBALS['num_past_appointments_to_show'] < 0) {
 	   $direction = "DESC";
-	   ($GLOBALS['num_past_appointments_to_show'] = -1 * $GLOBALS['num_past_appointments_to_show'] );
+	   ($showpast = -1 * $GLOBALS['num_past_appointments_to_show'] );
 	   }
-	if (isset($pid) && !$GLOBALS['disable_calendar'] && $GLOBALS['num_past_appointments_to_show'] > 0) {
+	   else
+	   {
+	   $showpast = $GLOBALS['num_past_appointments_to_show'];
+	   }
+	   
+	if (isset($pid) && !$GLOBALS['disable_calendar'] && $showpast > 0) {
 	 $query = "SELECT e.pc_eid, e.pc_aid, e.pc_title, e.pc_eventDate, " .
 	  "e.pc_startTime, e.pc_hometext, u.fname, u.lname, u.mname, " .
 	  "c.pc_catname, e.pc_apptstatus " .
@@ -1283,13 +1288,13 @@ expand_collapse_widget($widgetTitle, $widgetLabel, $widgetButtonLabel,
 	  "openemr_postcalendar_categories AS c WHERE " .
 	  "e.pc_pid = ? AND e.pc_eventDate < CURRENT_DATE AND " .
 	  "u.id = e.pc_aid AND e.pc_catid = c.pc_catid " .
-	  "ORDER BY e.pc_eventDate $direction, e.pc_startTime DESC " . 
-      "LIMIT " . $GLOBALS['num_past_appointments_to_show'];
+	  "ORDER BY e.pc_eventDate $direction , e.pc_startTime DESC " . 
+      "LIMIT " . $showpast;
 	
      $pres = sqlStatement($query, array($pid) );
 
 	// appointments expand collapse widget
-        $widgetTitle = xl("Past Appointments");
+        $widgetTitle = xl("Past Appoinments");
         $widgetLabel = "past_appointments";
         $widgetButtonLabel = '';
         $widgetButtonLink = '';

@@ -1104,6 +1104,12 @@ class Claim {
   function isOutsideLab() {
     return !empty($this->billing_options['outside_lab']);
   }
+  
+   function isCliaRequest() {
+    $whatisthisrequest = $this->billing_options['clia_num'];
+    $whatisthisrequest2 = $this->billing_options['clia_num'];
+    return !empty($this->billing_options['clia_num']);
+  }
 
   function outsideLabAmount() {
     return sprintf('%.2f', 0 + $this->billing_options['lab_amount']);

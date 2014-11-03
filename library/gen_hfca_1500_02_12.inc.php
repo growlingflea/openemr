@@ -152,7 +152,14 @@ function process_diagnoses_02_12(&$claim,&$log)
     $hcfa_entries[]=new hcfa_info(38,62,10,$claim->medicaidOriginalReference());
     
     // Box 23. Prior Authorization Number
-    $hcfa_entries[]=new hcfa_info(40,50,28,$claim->priorAuth());
+        //put_hcfa(40, 50, 28, $claim->priorAuth());
+         $var1e = $claim->priorAuth();
+         $varRequest = $claim->isCliaRequest();
+        if ($var1e != ""){
+        $hcfa_entries[]=new hcfa_info(40,50,28,$claim->priorAuth());
+        }elseif ($claim->isCliaRequest() && $claim->cliaCode() && ($CMS_5010 || $claim->claimType() === 'MB')){
+       $hcfa_entries[]=new hcfa_info(40,50,28,$claim->cliaCode()); 
+    }
     
     $diag_count=0;
     foreach($diags as $diag)

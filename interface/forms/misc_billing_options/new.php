@@ -59,7 +59,8 @@ echo "<form method='post' name='my_form' " .
 <span class=text><?php xl('BOX 22. Medicaid Resubmission Code (ICD-9) ','e');?></span><input type=entry size=9 name="medicaid_resubmission_code" value="<?php echo $obj{"medicaid_resubmission_code"};?>" >
 <span class=text><?php xl(' Medicaid Original Reference No. ','e');?></span><input type=entry size=15 name="medicaid_original_reference" value="<?php echo $obj{"medicaid_original_reference"};?>" ><br><br>
 <span class=text><?php xl('BOX 23. Prior Authorization No. ','e');?></span><input type=entry size=15 name="prior_auth_number" value="<?php echo $obj{"prior_auth_number"};?>" >
-<span class=text><?php xl('Print CLAI number? ','e');?><input type=checkbox name="clia_num" value="1" <?php if ($obj['clia_num'] == "1") echo "checked";?><br><br>
+<span class=text><?php xl('Print CLIA number? ','e');?><input type=checkbox name="clia_num" value="1" <?php if ($obj['clia_num'] == "1") echo "checked";?><br><br>
+<span class=text><?php xl('Values entered in textbox will override CLIA number','e');?><br><br>
 <span class=text><?php xl('X12 only: Replacement Claim ','e'); ?>: </span><input type=checkbox name="replacement_claim" value="1" <?php if ($obj['replacement_claim'] == "1") echo "checked";?>><br><br>
 
 <table>

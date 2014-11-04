@@ -496,5 +496,5 @@ ALTER TABLE `documents` ADD COLUMN `imported` TINYINT DEFAULT 0 NULL COMMENT 'Pa
 #EndIf
 
 #IfMissingColumn form_misc_billing_options clia_num
-ALTER TABLE `form_misc_billing_options` ADD COLUMN `clia_num` COMMENT 'hols clia num if medicare'
+ALTER TABLE `form_misc_billing_options` ADD COLUMN `clia_num` COMMENT 'Holds the flag to include CLIA Number on Claim'
 

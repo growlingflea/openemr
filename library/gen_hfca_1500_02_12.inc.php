@@ -152,7 +152,7 @@ function process_diagnoses_02_12(&$claim,&$log)
     $hcfa_entries[]=new hcfa_info(38,62,10,$claim->medicaidOriginalReference());
     
     // Box 23. Prior Authorization Number
-        //put_hcfa(40, 50, 28, $claim->priorAuth());
+        
          $var1e = $claim->priorAuth();
          $varRequest = $claim->isCliaRequest();
         if ($var1e != ""){

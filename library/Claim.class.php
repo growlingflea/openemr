@@ -250,7 +250,7 @@ class Claim {
       "forms.pid = '{$this->pid}' AND " .
       "forms.deleted = 0 AND " .
       "forms.formdir = 'misc_billing_options' " .
-      "ORDER BY forms.date";
+      "ORDER BY forms.date DESC";
     $this->billing_options = sqlQuery($sql);
 
     $referrer_id = (empty($GLOBALS['MedicareReferrerIsRenderer']) ||

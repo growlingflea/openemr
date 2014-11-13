@@ -494,7 +494,11 @@ CREATE TABLE `misc_address_book` (
 #IfMissingColumn documents imported
 ALTER TABLE `documents` ADD COLUMN `imported` TINYINT DEFAULT 0 NULL COMMENT 'Parsing status for CCR/CCD/CCDA importing';
 #EndIf
-
 #IfMissingColumn form_misc_billing_options clia_num
 ALTER TABLE `form_misc_billing_options` ADD COLUMN `clia_num` INT(1) DEFAULT '0' COMMENT 'Holds the flag to include CLIA Number on Claim';
 #endif
+#IfMissingColumn insurance_companies payer_assigned_id
+ALTER TABLE `insurance_companies` 
+  ADD `payer_assigned_id` varchar(15) NOT NULL DEFAULT '';
+#EndIf
+

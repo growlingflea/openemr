@@ -252,14 +252,27 @@ class Claim {
       "forms.formdir = 'misc_billing_options' " .
       "ORDER BY forms.date DESC";
     $this->billing_options = sqlQuery($sql);
-
-    $referrer_id = (empty($GLOBALS['MedicareReferrerIsRenderer']) ||
-      $this->insurance_numbers['provider_number_type'] != '1C') ?
+/*    
+    if (empty($GLOBALS['MedicareReferrerIsRenderer']){ //Flag is False
+        $referrer_id = $this->patient_data['ref_providerID']; //set from patient record
+    } else {
+        $referrer_id = $provider_id;
+    }  
+    // Look up referrer
+    if (! empty($referrer_id)) {
+        $sql = "SELECT * FROM users WHERE id = '$referrer_id'";
+        $this->referrer = sqlQuery($sql);
+    } else {
+        $this->referrer = array();
+    }
+*/   
+    
+    $referrer_id = (empty($GLOBALS['MedicareReferrerIsRenderer'])) ?
       $this->patient_data['ref_providerID'] : $provider_id;
     $sql = "SELECT * FROM users WHERE id = '$referrer_id'";
     $this->referrer = sqlQuery($sql);
     if (!$this->referrer) $this->referrer = array();
-
+      
     $supervisor_id = $this->encounter['supervisor_id'];
     $sql = "SELECT * FROM users WHERE id = '$supervisor_id'";
     $this->supervisor = sqlQuery($sql);
@@ -924,6 +937,10 @@ class Claim {
     return x12clean(trim($this->payers[$ins]['company']['alt_cms_id']));
   }
 
+   function payerAssignedID($ins=0) {
+    return x12clean(trim($this->payers[$ins]['company']['payer_assigned_id']));
+  }
+  
   function patientLastName() {
     return x12clean(trim($this->patient_data['lname']));
   }

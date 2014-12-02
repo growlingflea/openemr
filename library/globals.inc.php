@@ -696,6 +696,7 @@ $GLOBALS_METADATA = array(
       '0',                              // default
       xl('This specifies whether to include date in Box 31.')
     ),
+
 	  
 	'amendments' => array (
 		xl('Amendments'),
@@ -703,6 +704,20 @@ $GLOBALS_METADATA = array(
 		'1',                              // default = true
 		xl('Enable amendments feature')
 	),
+      
+          'cms_1500_left_margin' => array(
+      xl('CMS 1500: Left Margin'),
+      'text',                           // data type
+      '14',                               // default
+      xl('Specifies Left Margin, default = 14.')
+    ),
+      
+    'cms_1500_top_margin' => array(
+      xl('CMS 1500: Top Margin'),
+      'text',                           // data type
+      '28',                               // default
+      xl('Specifies Top Margin, default = 28.')
+    ), 
 
   ),
     // E-Sign Tab
@@ -750,6 +765,7 @@ $GLOBALS_METADATA = array(
       '1',                              // default = false
       xl('This will hide empty e-sign logs on the patient report')
     ),
+      
 
   ),
     //Documents Tab

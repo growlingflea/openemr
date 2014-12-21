@@ -157,7 +157,7 @@ function process_diagnoses_02_12(&$claim,&$log)
          $varRequest = $claim->isCliaRequest();
         if ($var1e != ""){
         $hcfa_entries[]=new hcfa_info(40,50,28,$claim->priorAuth());
-        }elseif ($claim->isCliaRequest() && $claim->cliaCode() && ($CMS_5010 || $claim->claimType() === 'MB')){
+        }elseif ($claim->isCliaRequest() || $claim->cliaCode() && ($CMS_5010 || $claim->claimType() === 'MB')){
        $hcfa_entries[]=new hcfa_info(40,50,28,$claim->cliaCode()); 
     }
     
@@ -184,3 +184,4 @@ function process_diagnoses_02_12(&$claim,&$log)
     }
 }
 ?>
+

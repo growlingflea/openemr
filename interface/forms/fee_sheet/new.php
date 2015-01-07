@@ -535,7 +535,7 @@ if (!$alertmsg && ($_POST['bn_save'] || $_POST['bn_save_close'])) {
 
     // Otherwise it's a new item...
     else if (! $del) {
-      $code_text = lookup_code_descriptions($code_type.":".$code);
+      $code_text = lookup_code_descriptions($code_type.":".$code.":".$modifier);
       addBilling($encounter, $code_type, $code, $code_text, $pid, $auth,
         $provid, $modifier, $units, $fee, $ndc_info, $justify, 0, $notecodes);
     }

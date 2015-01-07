@@ -615,6 +615,8 @@ function code_set_search($form_code_type,$search_term="",$count=false,$active=tr
  * @param  string $desc_detail Can choose either the normal description('code_text') or the brief description('code_text_short').
  * @return string         Is of the form "description;description; etc.".
  */
+
+//This function has the new ability to distinguish Jcodes with different modifiers. 
 function lookup_code_descriptions($codes,$desc_detail="code_text") {
   global $code_types, $code_external_tables;
 
@@ -628,7 +630,7 @@ function lookup_code_descriptions($codes,$desc_detail="code_text") {
     $relcodes = explode(';', $codes);
     foreach ($relcodes as $codestring) {
       if ($codestring === '') continue;
-      list($codetype, $code) = explode(':', $codestring);
+      list($codetype, $code, $modifier) = explode(':', $codestring);
       $table_id=$code_types[$codetype]['external'];
       if(isset($code_external_tables[$table_id]))
       {
@@ -637,8 +639,9 @@ function lookup_code_descriptions($codes,$desc_detail="code_text") {
         $code_col=$table_info[EXT_COL_CODE];
         $desc_col= $table_info[DISPLAY_DESCRIPTION]=="" ? $table_info[EXT_COL_DESCRIPTION] : $table_info[DISPLAY_DESCRIPTION];
         $desc_col_short= $table_info[DISPLAY_DESCRIPTION]=="" ? $table_info[EXT_COL_DESCRIPTION_BRIEF] : $table_info[DISPLAY_DESCRIPTION];
+        $modifier_col = "modifier";
         $sqlArray = array();
-        $sql = "SELECT ".$desc_col." as code_text,".$desc_col_short." as code_text_short FROM ".$table_name;
+        $sql = "SELECT ".$desc_col." as code_text,".$desc_col_short." as code_text_short,".$modifier_col." as modifier FROM ".$table_name;
         
         // include the "JOINS" so that we get the preferred term instead of the FullySpecifiedName when appropriate.
         foreach($table_info[EXT_JOINS] as $join_info)
@@ -669,8 +672,9 @@ function lookup_code_descriptions($codes,$desc_detail="code_text") {
         if ($table_id==0) { $sql .= " code_type = '".add_escape_custom($code_types[$codetype]['id'])."' AND ";   }      
 
         // Specify the code in the query.
-        $sql .= $table_name.".".$code_col."=? ";
-        array_push($sqlArray,$code);
+        $sql .= $table_name.".".$code_col."=? AND $modifier_col =?";
+       
+        array_push($sqlArray,$code, $modifier);
        
         // We need to include the filter clauses 
         // For SNOMED and SNOMED-CT this ensures that we get the Preferred Term or the Fully Specified Term as appropriate

@@ -682,60 +682,7 @@ function clearactive() {
   }
  }
  
-  //
-  // Commented out this code block are part of the removal of the athletic team code TLH
-  // 
-  // Clear and reload issue-related menu items for active_pid.
-  // Currently this only applies to athletic teams, but might be implemented
-  // in the general menu at some future time.
-  //
-  //function reloadIssues() {
- //<?php
-   //if ($GLOBALS['athletic_team']) {
-     // Generates a menu item for each active issue that this patient
-     // has of each issue type.  Each one looks like this:
-     //   Onset-Date [Add] Issue-Title
-     // where the first part is a link to open the issue dialog,
-     // [Add] is a link that auto-creates and opens a new encounter, and
-     // Issue-Title is a link that shows related encounters.
-     //foreach ($ISSUE_TYPES as $key => $value) {
- //?>
-   //$('#icontainer_<?php echo $key ?>').empty();
-   //if (active_pid != 0) {
-   // $('#icontainer_<?php echo $key ?>').append("<li>" +
-   //  "<a href='' id='xxx1' onclick='return repPopup(" +
-   //  "\"../patient_file/summary/add_edit_issue.php?thistype=" +
-   //  "<?php echo $key; ?>\")' " +
-   //  "title='<?php echo xl('Create new issue'); ?>'>" +
-   //  "<?php echo xl('New') . " " . $value[1]; ?></a></li>");
-   // top.restoreSession();
-   // $.getScript('../../library/ajax/left_nav_issues_ajax.php?type=<?php echo $key; ?>');
-  // }
- //<?php
-    // }
-  // }
- //?>
-  //} // end function reloadIssues
- 
-  // This is referenced in left_nav_issues_ajax.php and is called when [Add]
-  // is clicked for an issue menu item to add a new encounter for the issue.
-  // So far this only applies to the Athletic Team version of the menu.
-  //
-  //function addEncNotes(issue) {
- 
-   // top.restoreSession();
-   // $.getScript('../../library/ajax/left_nav_encounter_ajax.php?createvisit=1&issue=' + issue);
- 
-   // The above AJAX call was to create the encounter right away, but we later
-   // (2012-07-03) decided it's better to present the New Encounter form instead.
-   // Note the issue ID is passed so it will be pre-selected in that form.
-   //loadFrame2('nen1','RBot','forms/newpatient/new.php?autoloaded=1&calenc=&issue=' + issue);
- 
-   //return false;
-  //}
-  //
-  // Commented out the above code block are part of the removal of the athletic team code TLH
-  // 
+
   
   
  // Call this to announce that the patient has changed.  You must call this
@@ -1229,6 +1176,12 @@ if (!empty($reg)) {
       <?php if ( ($GLOBALS['include_de_identification']) && (acl_check('admin', 'super'    )) ) genMiscLink('RTop','adm','0',xl('De Identification'),'de_identification_forms/de_identification_screen1.php'); ?>
           <?php if ( ($GLOBALS['include_de_identification']) && (acl_check('admin', 'super'    )) ) genMiscLink('RTop','adm','0',xl('Re Identification'),'de_identification_forms/re_identification_input_screen.php'); ?>
       <?php if (acl_check('admin', 'super') && !empty($GLOBALS['code_types']['IPPF'])) genMiscLink('RTop','adm','0',xl('Export'),'main/ippf_export.php'); ?>
+        <li><a class="collapsed_lv2"><span><?php xl('Immunization','e') ?></span></a>
+            <ul>
+                <?php if (acl_check('admin', 'language')) genMiscLink('RTop','adm','0',xl('Codes'),'immunizations/codes.php'); ?>
+                <?php if (acl_check('admin', 'forms'   )) genMiscLink('RTop','adm','0',xl('Schedules'),'immunizations/schedules.php'); ?>
+            </ul>
+        </li>
       <li><a class="collapsed_lv2"><span><?php xl('Other','e') ?></span></a>
         <ul>
           <?php if (acl_check('admin', 'language')) genMiscLink('RTop','adm','0',xl('Language'),'language/language.php'); ?>
@@ -1308,6 +1261,7 @@ if (!empty($reg)) {
           <?php if ($GLOBALS['enable_amc']) genMiscLink('RTop','rep','0',xl('Automated Measures (AMC)'),'reports/cqm.php?type=amc'); ?>
           <?php if ($GLOBALS['enable_amc_tracking']) genMiscLink('RTop','rep','0',xl('AMC Tracking'),'reports/amc_tracking.php'); ?>
           <?php if ($GLOBALS['enable_cdr'] && $GLOBALS['enable_alert_log'] ) genMiscLink('RTop','rep','0',xl('Alerts Log'),'reports/cdr_log.php'); ?>
+          <?php genMiscLink('RTop','rep','0',xl('VFC Immunizations'),'reports/vfc_immunization_report.php'); ?>
         </ul>
       </li>
       <li><a class="collapsed_lv2"><span><?php xl('Visits','e') ?></span></a>

@@ -26,7 +26,7 @@
 $menu_json='[
   {"label":"Calendar","menu_id":"cal0","target":"cal","url":"/interface/main/main_info.php","children":[],"requirement":0,"global_req_strict":["!disable_calendar","!ippf_specific"]},
   {"label":"Flow Board","menu_id":"pfb0","target":"flb","url":"/interface/patient_tracker/patient_tracker.php?skip_timeout_reset=1","children":[],"requirement":0,"global_req_strict":["!disable_pat_trkr","!disable_calendar"]},
-  {"label":"Messages ","menu_id":"msg0","target":"msg","url":"/interface/main/messages/messages.php?form_active=1","children":[],"requirement":0},
+  {"label":"Messages ","menu_id":"msg0","target":"msg","url":"/interface/main/messages/messages.php?form_active=1","children":[],"requirement":0},    
   {"label":"Patient/Client","menu_id":"patimg","children":[
     {"label":"Patients","menu_id":"fin0","target":"fin","url":"/interface/main/finder/dynamic_finder.php","children":[],"requirement":0},
     {"label":"New/Search","menu_id":"new0","target":"pat","url":"/interface/new/new.php","children":[],"requirement":0,"global_req":"full_new_patient_form"},
@@ -73,7 +73,7 @@ $menu_json='[
     {"label":"e-Rx EPCS","menu_id":"ncr2","target":"pat","url":"/interface/eRx.php?page=epcs-admin","children":[],"requirement":0,"global_req":"newcrop_user_role_erxadmin"}],"requirement":1,"global_req_strict":["erx_enable","newcrop_user_role"]},
   {"label":"Administration","menu_id":"admimg","children":[
     {"label":"Globals","menu_id":"adm0","target":"adm","url":"/interface/super/edit_globals.php","children":[],"requirement":0,"acl_req":["admin","super"]},
-    {"label":"Facilities","menu_id":"adm0","target":"adm","url":"/interface/usergroup/facilities.php","children":[],"requirement":0,"acl_req":["admin","users"]},
+    {"label":"Facilities","menu_id":"adm0","target":"adm","url":"/interface/usergroup/facilities.php","children":[],"requirement":0,"acl_req":["admin","users"]},    
     {"label":"Users","menu_id":"adm0","target":"adm","url":"/interface/usergroup/usergroup_admin.php","children":[],"requirement":0,"acl_req":["admin","users"]},
     {"label":"Addr Book","menu_id":"adb0","target":"adm","url":"/interface/usergroup/addrbook_list.php","children":[],"requirement":0,"acl_req":["admin","practice"]},
     {"label":"Practice","menu_id":"adm0","target":"adm","url":"/controller.php?practice_settings&pharmacy&action=list","children":[],"requirement":0,"acl_req":["admin","practice"]},
@@ -89,6 +89,11 @@ $menu_json='[
     {"label":"De Identification","menu_id":"adm0","target":"adm","url":"/interface/de_identification_forms/de_identification_screen1.php","children":[],"requirement":0,"acl_req":["admin","super"],"global_req":"include_de_identification"},
     {"label":"Re Identification","menu_id":"adm0","target":"adm","url":"/interface/de_identification_forms/re_identification_input_screen.php","children":[],"requirement":0,"acl_req":["admin","super"],"global_req":"include_de_identification"},
     {"label":"Export","menu_id":"adm0","target":"adm","url":"/interface/main/ippf_export.php","children":[],"requirement":0,"acl_req":["admin","super"],"global_req":"ippf_specific"},
+    
+    {"label":"Immunizations","menu_id":"adm0","children":[
+        {"label":"Codes","menu_id":"adm0","target":"adm","url":"/interface/immunizations/codes.php","children":[],"requirement":0,"acl_req":["admin","users"]},
+        {"label":"Edit Imm. Schedules","menu_id":"adb0","target":"adm","url":"/interface/immunizations/schedules.php","children":[],"requirement":0,"acl_req":["admin","practice"]}],"requirement":0,"acl_req":["admin","users"]},
+    
     {"label":"Other","icon":"fa-caret-right","children":[
       {"label":"Language","menu_id":"adm0","target":"adm","url":"/interface/language/language.php","children":[],"requirement":0,"acl_req":["admin","language"]},
       {"label":"Forms","menu_id":"adm0","target":"adm","url":"/interface/forms_admin/forms_admin.php","children":[],"requirement":0,"acl_req":["admin","forms"]},
@@ -116,6 +121,7 @@ $menu_json='[
       {"label":"Quality Measures (CQM)","menu_id":"rep0","target":"rep","url":"/interface/reports/cqm.php?type=cqm","children":[],"requirement":0,"global_req":"enable_cqm"},
       {"label":"Automated Measures (AMC)","menu_id":"rep0","target":"rep","url":"/interface/reports/cqm.php?type=amc","children":[],"requirement":0,"global_req":"enable_amc"},
       {"label":"AMC Tracking","menu_id":"rep0","target":"rep","url":"/interface/reports/amc_tracking.php","children":[],"requirement":0,"global_req":"enable_amc_tracking"},
+      {"label":"VFC Immunization Reporting","menu_id":"rep0","target":"rep","url":"/interface/reports/vfc_immunization_report.php","children":[],"requirement":0},
       {"label":"Alerts Log","menu_id":"rep0","target":"rep","url":"/interface/reports/cdr_log.php","children":[],"requirement":0}],"requirement":0,"global_req_strict":["enable_cdr","enable_alert_log"]},
     {"label":"Visits","icon":"fa-caret-right","children":[
       {"label":"Daily Report","menu_id":"rep0","target":"rep","url":"/interface/reports/daily_summary_report.php","children":[],"requirement":0},

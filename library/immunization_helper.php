@@ -33,7 +33,7 @@ function getImmunizationList($pid,$sortby,$showError) {
                 ",i1.manufacturer ,i1.lot_number, i1.completion_status ".
                 ",ifnull(concat(u.lname,', ',u.fname),'Other') as administered_by ".
                 ",i1.education_date ,i1.note ". ",i1.expiration_date " .
-                ",i1.amount_administered, i1.amount_administered_unit, i1.route, i1.administration_site, i1.added_erroneously".
+                ",i1.amount_administered, i1.amount_administered_unit, i1.route, i1.administration_site, i1.added_erroneously, i1.historical, i1.vfc".
                 " from immunizations i1 ".
                 " left join users u on i1.administered_by_id = u.id ".
                 " left join code_types ct on ct.ct_key = 'CVX' ".

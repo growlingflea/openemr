@@ -18,7 +18,8 @@ if (isset($_GET['mode'])) {
 	 * THIS IS A BUG. IF NEW IMMUN IS ADDED AND USER PRINTS PDF, 
 	 * WHEN BACK IS CLICKED, ANOTHER ITEM GETS ADDED
 	 */
-	
+
+    //historical and vfc added for CAIR2
 	if ($_GET['mode'] == "add") {
         $sql = "REPLACE INTO immunizations set 
                       id = ?,
@@ -41,6 +42,8 @@ if (isset($_GET['mode'])) {
 					  expiration_date = if(?,?,NULL),
 					  route = ?,
 					  administration_site = ? ,
+					   historical = ?,
+                      vfc = ?,
                       completion_status = ?,
                       information_source = ?,
                       refusal_reason = ?,
@@ -65,10 +68,12 @@ if (isset($_GET['mode'])) {
 			 trim($_GET['immuniz_exp_date']), trim($_GET['immuniz_exp_date']),
 			 trim($_GET['immuniz_route']),
 			 trim($_GET['immuniz_admin_ste']),
-                trim($_GET['immuniz_completion_status']),
-                trim($_GET['immunization_informationsource']),
-                trim($_GET['immunization_refusal_reason']),
-                trim($_GET['ordered_by_id'])
+            trim($_GET['immuniz_completion_status']),
+            trim($_GET['immunization_informationsource']),
+            trim($_GET['immunization_refusal_reason']),
+            trim($_GET['ordered_by_id']),
+            trim($_GET['historical']), //added for CAIR2
+            trim($_GET['vfc'])          //added for CAIR2
 		     );
         $newid = sqlInsert($sql,$sqlBindArray);
         $administered_date=date('Y-m-d H:i');
@@ -127,7 +132,12 @@ if (isset($_GET['mode'])) {
         $ordered_by_id      = ($result['ordering_provider'] ? $result['ordering_provider'] : 0);
 	$entered_by_id      = ($result['created_by'] ? $result['created_by'] : 0);
 
-		$administered_by = "";
+    // historical and vfc added for CAIR2
+        $historical = $result['historical'];
+        $vfc = $result['vfc'];
+
+
+        $administered_by = "";
 		if (!$result['administered_by'] && !$row['administered_by_id']) {
     		$stmt = "select CONCAT(IFNULL(lname,''), ' ,',IFNULL(fname,'')) as full_name ".
             		"from users where ".
@@ -420,9 +430,10 @@ var mypcc = '<?php echo htmlspecialchars( $GLOBALS['phone_country_code'], ENT_QU
         <tr>
           <td align="right">
             <span class=text>
+                <!-- changed to use custom manufacturer chooser -->
               <?php echo htmlspecialchars( xl('Immunization Manufacturer'), ENT_NOQUOTES); ?>            </span>          </td>
           <td>
-              <?php echo generate_select_list('manufacturer', 'Immunization_Manufacturer', $manufacturer, 'Select Manufacturer', '');?>
+            <input class='text' type='text' name="manufacturer" size="25" value="<?php echo htmlspecialchars( $manufacturer, ENT_QUOTES); ?>">          </td>
         </tr>
         <tr>
           <td align="right">
@@ -487,18 +498,47 @@ var mypcc = '<?php echo htmlspecialchars( $GLOBALS['phone_country_code'], ENT_QU
         <tr>
           <td align="right" class='text'><?php echo htmlspecialchars( xl('Route'), ENT_NOQUOTES); ?></td>
           <td>
-		  	<?php echo generate_select_list('immuniz_route', 'drug_route', $immuniz_route, 'Select Route', '');?>		  
+		  	<?php echo generate_select_list('immuniz_route', 'drug_routes', $immuniz_route, 'Select Route', '');?>
 		  </td>
         </tr>
         <tr>
           <td align="right" class='text'><?php echo htmlspecialchars( xl('Administration Site'), ENT_NOQUOTES); ?></td>
           <td>
-		  	<?php echo generate_select_list('immuniz_admin_ste', 'immunization_administered_site', $immuniz_admin_ste, 'Select Administration Site', ' ', '','','',null,false,'proc_body_site');?>
+		  	<?php echo generate_select_list('immuniz_admin_ste', 'Imm_Administrative_Site__CAIR', $immuniz_admin_ste, 'Select Administration Site', ' ');?>
 		  </td>
         </tr>
         <tr>
-          <td align="right" class='text'>
-              <?php echo htmlspecialchars( xl('Notes'), ENT_NOQUOTES); ?>          </td>
+
+          <tr>
+              <td align="right" class='text'><?php echo htmlspecialchars( xl('VFC Eligibility'), ENT_NOQUOTES); ?></td>
+              <td>
+                  <select name = 'vfc'>
+                      <option value="V01">V01: not VFC eligible (Private Pay/Insurance) </option>
+                      <option value="V02" selected="selected">V02: VFC eligible – Medi-Cal/Medi-Cal Managed Care</option>
+                      <option value="V03">V03: VFC eligible - Uninsured</option>
+                      <option value="V04">V04: VFC eligible - American Indian/Alaskan Native </option>
+                      <option value="V05">V05: VFC eligible - Underinsured</option>
+                      <option value="V07">V06: Public vaccine - State- specific eligibility [317 Special Funds] </option>
+                      <option value="CAA01">CAA01: State General Fund Vaccines</option>
+
+                  </select
+              </td>
+          </tr>
+          <tr>
+              <td align = "right">
+                  <span class=text><?php echo htmlspecialchars( xl('Historical?'), ENT_NOQUOTES); ?></span>
+              </td>
+              <td>
+                  <input type="checkbox" name="historical" value="01">
+              </td>
+
+          </tr>
+
+          <?php $_GET['historical'] === '01' ? $_GET['historical'] = '01' : $_GET['historical'] = '00' ?>
+
+
+          <tr>
+              <td align="right" class='text'><?php echo htmlspecialchars( xl('VFC Eligibility'), ENT_NOQUOTES); ?></td>
           <td>
             <textarea class='text' name="note" id="note" rows=5 cols=25><?php echo htmlspecialchars( $note, ENT_NOQUOTES); ?></textarea>          </td>
         </tr>
@@ -748,6 +788,7 @@ var mypcc = '<?php echo htmlspecialchars( $GLOBALS['phone_country_code'], ENT_QU
 	<th><?php echo htmlspecialchars( xl('Route'), ENT_NOQUOTES); ?></th>
 	<th><?php echo htmlspecialchars( xl('Administered Site'), ENT_NOQUOTES); ?></th>
     <th><?php echo htmlspecialchars( xl('Notes'), ENT_NOQUOTES); ?></th>
+    <th><?php echo htmlspecialchars( xl('VFC Eligibility'), ENT_NOQUOTES); ?></th>
     <th><?php echo htmlspecialchars( xl('Completion Status'), ENT_NOQUOTES); ?></th>
     <th><?php echo htmlspecialchars( xl('Error'), ENT_NOQUOTES); ?></th>
 	<th>&nbsp;</th>
@@ -813,12 +854,15 @@ var mypcc = '<?php echo htmlspecialchars( $GLOBALS['phone_country_code'], ENT_QU
             echo "<td>" . $del_tag_open . htmlspecialchars( $row["lot_number"], ENT_NOQUOTES) . $del_tag_close . "</td>";
             echo "<td>" . $del_tag_open . htmlspecialchars( $row["administered_by"], ENT_NOQUOTES) . $del_tag_close . "</td>";
             echo "<td>" . $del_tag_open . htmlspecialchars( $row["education_date"], ENT_NOQUOTES) . $del_tag_close . "</td>";
-			echo "<td>" . $del_tag_open . generate_display_field(array('data_type'=>'1','list_id'=>'drug_route'), $row['route']) . $del_tag_close . "</td>";
+			echo "<td>" . $del_tag_open . generate_display_field(array('data_type'=>'1','list_id'=>'drug_routes'), $row['route']) . $del_tag_close . "</td>";
 			echo "<td>" . $del_tag_open . generate_display_field(array('data_type'=>'1','list_id'=>'immunization_administered_site'), $row['administration_site']) . $del_tag_close . "</td>";
 			echo "<td>" . $del_tag_open . htmlspecialchars( $row["note"], ENT_NOQUOTES) . $del_tag_close . "</td>";
-                        echo "<td>" . $del_tag_open . generate_display_field(array('data_type'=>'1','list_id'=>'Immunization_Completion_Status'), $row['completion_status']) . $del_tag_close . "</td>";
-			
-			if ($isError) {
+            echo "<td>" . $del_tag_open . generate_display_field(array('data_type'=>'1','list_id'=>'Immunization_Completion_Status'), $row['completion_status']) . $del_tag_close . "</td>";
+            echo "<td>" . $del_tag_open . htmlspecialchars( $row["vfc"], ENT_NOQUOTES) . $del_tag_close . "</td>";
+
+
+
+            if ($isError) {
 				$checkbox = "checked";
 			} else {
 				$checkbox = "";
@@ -1142,5 +1186,5 @@ function sel_code(id)
     dlgopen('<?php echo $GLOBALS['webroot'] . "/interface/patient_file/encounter/" ?>find_code_popup.php', '_blank', 700, 400);
 }
 </script>
-
+<?php include_once("immunizations_schedules/initialize_immunizations_form.php"); ?>
 </html>

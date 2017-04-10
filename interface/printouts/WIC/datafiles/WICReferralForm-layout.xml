@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <font filename="/var/pdfgeneration/fonts/GildaDisplay-Regular.ttf"/>
+    <field id="fname" xpos="25" ypos="130" />
+    <field id="lname" xpos="175" ypos="130"/>
+    <field id="DOB_MDY" xpos="425" ypos="130"/>
+    <field id="height" xpos="50" ypos="150" font-size="8"/>
+    <field id="weight_lbs" xpos="139" ypos="150" font-size="8"/>
+    <field id="weight_ozs" xpos="172" ypos="150" font-size="8"/>
+    
+    <field id="bmi_pct" xpos="275" ypos="150" font-size="8"/>
+    
+    <field id="stature_date" xpos="330" ypos="155"/>
+    <field id="hgb" xpos="90" ypos="215" suffix=" gm/dL" />
+    <field id="hgb-date" xpos="225" ypos="215" />
+
+    
+    <field id="birth_lbs" xpos="440" ypos="155" />
+    <field id="birth_ozs" xpos="485" ypos="155" />
+
+    
+    <field id="lead" xpos="240" ypos="235"/>
+    <field id="office-address-1" xpos="330" ypos="700"/>
+    <field id="office-address-2" xpos="330" ypos="711"/>
+    <field id="office-address-3" xpos="330" ypos="722"/>
+    
+    <field id="provider" xpos="25" ypos="700"/>
+
+    <field id="phone" xpos="25" ypos="750" font-size="8"/>
+    <field id="today" xpos="220" ypos="750"/>
+</layout>

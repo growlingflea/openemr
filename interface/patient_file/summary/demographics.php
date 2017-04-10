@@ -952,6 +952,9 @@ if ( $insurance_count > 0 ) {
 								  <span class='bold'><?php echo htmlspecialchars(xl('Secondary Medicare Type'),ENT_NOQUOTES); ?>: </span>
 								  <span class='text'><?php echo htmlspecialchars($policy_types[$row['policy_type']],ENT_NOQUOTES); ?></span>
 							<?php } ?>
+								  <span class='bold'><?php echo htmlspecialchars(xl('California Children\'s Services'),ENT_NOQUOTES); ?>:</span>
+								  <span class='text'><?php if($row['cal_child_services'] == "TRUE") echo xl("YES"); ?>
+								  <?php if($row['cal_child_services'] == "FALSE") echo xl("NO"); ?></span>
 								 </td>
 								 <td valign='top'></td>
 								 <td valign='top'></td>
@@ -1663,4 +1666,7 @@ checkSkipConditions();
 </script>
 
 </body>
+<script type="text/javascript" src="demographics_ordering.js"></script>
+<?php require_once("../../printouts/chooser.php"); ?>
+<?php require_once("../../stats/demographics_setup.php"); ?>
 </html>

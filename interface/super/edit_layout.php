@@ -16,6 +16,12 @@
  * @package OpenEMR
  * @author  Rod Roark <rod@sunsetsystems.com>
  * @link    http://www.open-emr.org
+ *
+ *  * Modified by Daniel Pflieger to add check-all box in LBFs.  This modification
+ * allows end users to check all boxes at once instead of having to check each box individually.
+ *
+ * @modifier: Daniel Pflieger <daniel@mi-squared.com>
+ *
  */
 
 require_once("../globals.php");
@@ -55,6 +61,7 @@ while ($lrow = sqlFetchArray($lres)) {
     $validations[$lrow['option_id']] = xl_list_label($lrow['title']);
 }
 // array of the data_types of the fields
+// added in Checkbox with master
 $datatypes = array(
   "1"  => xl("List box"),
   "2"  => xl("Textbox"),
@@ -68,6 +75,7 @@ $datatypes = array(
   "15" => xl("Billing codes"),
   "16" => xl("Insurances"),
   "18" => xl("Visit Categories"),
+  "20" => xl("Checkbox list w/Master"), //added by Daniel Pflieger
   "21" => xl("Checkbox list"),
   "22" => xl("Textbox list"),
   "23" => xl("Exam results"),
@@ -486,7 +494,7 @@ function writeFieldLine($linedata) {
       $linedata['data_type'] == 23 || $linedata['data_type'] == 25 ||
       $linedata['data_type'] == 27 || $linedata['data_type'] == 28 ||
       $linedata['data_type'] == 32 || $linedata['data_type'] == 15 ||
-      $linedata['data_type'] == 40
+      $linedata['data_type'] == 40 || $linedata['data_type'] == 20 //added by Daniel Pflieger
     ) {
       // Show the width field
       echo "<input type='text' name='fld[$fld_line_no][lengthWidth]' value='" .
@@ -518,7 +526,7 @@ function writeFieldLine($linedata) {
     echo "</td>\n";
 
     echo "  <td align='center' class='optcell' style='width:8%'>";
-    if ($linedata['data_type'] ==  1 || $linedata['data_type'] == 21 ||
+    if ($linedata['data_type'] ==  1 || $linedata['data_type'] == 21 || $linedata['data_type'] == 20 ||
       $linedata['data_type'] == 22 || $linedata['data_type'] == 23 ||
       $linedata['data_type'] == 25 || $linedata['data_type'] == 26 ||
       $linedata['data_type'] == 27 || $linedata['data_type'] == 32 ||

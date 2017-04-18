@@ -51,14 +51,14 @@ class FormVitals extends ORDataObject {
 	 * Constructor sets all Form attributes to their default value
 	 */
 
-	function __construct($id= "", $_prefix = "")	{
+	function FormVitals($id= "", $_prefix = "")	{
 		if ($id > 0) {
 			$this->id = $id;
 			
 		}
 		else {
 			$id = "";
-			$this->date = $this->get_date();
+			$this->date = $this->get_date();	
 		}
 		
 		$this->_table = "form_vitals";
@@ -111,7 +111,7 @@ class FormVitals extends ORDataObject {
 	}
 	
   function get_date() {
-    if(!$this->date){
+    if(!$this->date){			
       $this->date = date('YmdHis', time());
     }
     return $this->date;
@@ -166,7 +166,13 @@ class FormVitals extends ORDataObject {
                 if($GLOBALS['us_weight_format']==2)
                 {
                     $pounds_int=floor($pounds);
-                    return $pounds_int." ".xl('lb') ." " .round(($pounds-$pounds_int)*16)." ".xl('oz');
+                    $ounces_int=round(($pounds-$pounds_int)*16);
+                    if($ounces_int==16)
+                    {
+                        $ounces_int=0;
+                        $pounds_int++;
+                    }
+                    return $pounds_int." ".xl('lb') ." " .$ounces_int." ".xl('oz');
                 }
                 else
                 {

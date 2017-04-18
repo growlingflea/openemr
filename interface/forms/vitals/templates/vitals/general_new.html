@@ -3,7 +3,7 @@
 {php}html_header_show();{/php}
 
 <style type="text/css">@import url({$FORM_ACTION}/library/dynarch_calendar.css);</style>
-<script type="text/javascript" src="{$FORM_ACTION}/library/dialog.js?v={php} echo $v_js_includes; {/php}"></script>
+<script type="text/javascript" src="{$FORM_ACTION}/library/dialog.js"></script>
 <script type="text/javascript" src="{$FORM_ACTION}/library/textformat.js"></script>
 <script type="text/javascript" src="{$FORM_ACTION}/library/dynarch_calendar.js"></script>
 {php} include_once("{$GLOBALS['srcdir']}/dynarch_calendar_en.inc.php"); {/php}
@@ -16,60 +16,7 @@ var mypcc = '{php} echo $GLOBALS['phone_country_code'] {/php}';
 //  for entring of vitals and for graphing/trending previous vitals by being embedded
 //  in the interface/patient_file/encounter/trend_form.php page.
 if (typeof jQuery == 'undefined') {
-  document.write("<script type='text/javascript' src='{/literal}{php}echo $GLOBALS['assets_static_relative'];{/php}{literal}/jquery-min-1-2-1/index.js'><\/script>")
-}
-
-function vitalsFormSubmitted() {
-	var invalid = "";
-	
-	var elementsToValidate = new Array();
-	
-	elementsToValidate[0] = new Array();
-	elementsToValidate[0][0] = 'weight_input';
-	elementsToValidate[0][1] = '{/literal}{xl t="Weight"}{literal}' + ' (' + '{/literal}{xl t="lbs"}{literal}' + ')';
-	
-	elementsToValidate[1] = new Array();
-	elementsToValidate[1][0] = 'weight_input_metric';
-	elementsToValidate[1][1] = '{/literal}{xl t="Weight"}{literal}' + ' (' + '{/literal}{xl t="kg"}{literal}' + ')';
-	
-	elementsToValidate[2] = new Array();
-	elementsToValidate[2][0] = 'height_input';
-	elementsToValidate[2][1] = '{/literal}{xl t="Height/Length"}{literal}' + ' (' + '{/literal}{xl t="in"}{literal}' + ')';
-	
-	elementsToValidate[3] = new Array();
-	elementsToValidate[3][0] = 'height_input_metric';
-	elementsToValidate[3][1] = '{/literal}{xl t="Height/Length"}{literal}' + ' (' + '{/literal}{xl t="cm"}{literal}' + ')';
-
-	elementsToValidate[4] = new Array();
-	elementsToValidate[4][0] = 'bps_input';
-	elementsToValidate[4][1] = '{/literal}{xl t="BP Systolic"}{literal}';
-	
-	elementsToValidate[5] = new Array();
-	elementsToValidate[5][0] = 'bpd_input';
-	elementsToValidate[5][1] = '{/literal}{xl t="BP Diastolic"}{literal}';
-	
-	for (var i = 0; i < elementsToValidate.length; i++) {
-		var current_elem_id = elementsToValidate[i][0];
-		var tag_name = elementsToValidate[i][1];
-		
-		document.getElementById(current_elem_id).classList.remove('error');
-		
-		if (isNaN(document.getElementById(current_elem_id).value)) {
-			invalid += "{/literal}{xl t="The following field has an invalid value"}{literal}" + ": " + tag_name + "\n";
-			document.getElementById(current_elem_id).className = document.getElementById(current_elem_id).className + " error";
-			document.getElementById(current_elem_id).focus();
-		}
-	}
-	
-	if (invalid.length > 0) {
-		invalid += "\n" + "{/literal}{xl t="Please correct the value(s) before proceeding!"}{literal}";
-		alert(invalid);	
-		
-		return false;
-	} else {
-
-		return top.restoreSession();
-	}
+  document.write("<script type='text/javascript' src='{/literal}{php}echo $GLOBALS['webroot'];{/php}{literal}/library/js/jquery.js'><\/script>")
 }
 </script>
 <style type="text/css" title="mystyles" media="all">
@@ -110,17 +57,13 @@ td,th {
 .readonly {
     display:none;
 }
-
-.error {
-  border:2px solid red;
-}
 </style>
 {/literal}
 
 </head>
 <body bgcolor="{$STYLE.BGCOLOR2}">
 <p><table><tr><td><span class="title">{xl t="Vitals"}</span></td><td>&nbsp;&nbsp;&nbsp;<a href="../summary/demographics.php" class="readonly css_button_small" onclick="top.restoreSession()"> <span>{xl t="View Patient"}</span></a></td></tr></table></p>
-<form name="vitals" method="post" action="{$FORM_ACTION}/interface/forms/vitals/save.php" onSubmit="return vitalsFormSubmitted()">
+<form name="vitals" method="post" action="{$FORM_ACTION}/interface/forms/vitals/save.php" onSubmit="return top.restoreSession()">
 <div id="chart"></div>
 <table>
 	<tr><th align="left">{xl t="Name"}</th><th align="left">{xl t="Unit"}</th>
@@ -156,7 +99,7 @@ td,th {
         {/foreach}</tr>
 	
 	{if $units_of_measurement == 4}<tr class="hide">{else}<tr>{/if}
-	        {if $units_of_measurement == 2}<td class="unfocus graph" id="height">{else}<td class="graph" id="height">{/if}{xl t="Height/Length"}</td>
+	        {if $units_of_measurement == 2}<td class="unfocus graph" id="height">{else}<td class="graph" id="height">{/if}{xl t="Height"}</td>
 		{if $units_of_measurement == 2}<td class="unfocus">{else}<td>{/if}{xl t="in"}</td>
 		{if $units_of_measurement == 2}<td class="valuesunfocus">{else}<td class='currentvalues'>{/if}
                 <input type="text" size='5' name='height' id='height_input' value="{if $vitals->get_height() != 0}{$vitals->get_height()}{/if}" onChange="convIntoCm('height_input');"/>
@@ -166,10 +109,10 @@ td,th {
 	{/foreach}</tr>
 	
 	{if $units_of_measurement == 3}<tr class="hide">{else}<tr>{/if}
-                {if $units_of_measurement == 1}<td class="unfocus graph" id="height_metric">{else}<td class="graph" id="height_metric">{/if}{xl t="Height/Length"}</td>
+                {if $units_of_measurement == 1}<td class="unfocus graph" id="height_metric">{else}<td class="graph" id="height_metric">{/if}{xl t="Height"}</td>
 		{if $units_of_measurement == 1}<td class="unfocus">{else}<td>{/if}{xl t="cm"}</td>
                 {if $units_of_measurement == 1}<td class="valuesunfocus">{else}<td class='currentvalues'>{/if}
-                <input type="text" size='5' id='height_input_metric' value="{if $vitals->get_height() != 0}{math equation="round(number * constant,1)" number=$vitals->get_height() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('height_input');"/>
+                <input type="text" size='5' id='height_input_metric' value="{if $vitals->get_height() != 0}{math equation="number * constant" number=$vitals->get_height() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('height_input');"/>
                 </td>
         {foreach item=result from=$results}
                 <td class='historicalvalues'>{if $result.height != 0}{math equation="number * constant" number=$result.height constant=2.54 format="%.2f"}{/if}</td>
@@ -256,7 +199,7 @@ td,th {
                 {if $units_of_measurement == 1}<td class="unfocus graph" id="head_circ_metric">{else}<td class="graph" id="head_circ_metric">{/if}{xl t="Head Circumference"}</td>
 		{if $units_of_measurement == 1}<td class="unfocus">{else}<td>{/if}{xl t="cm"}</td>
                 {if $units_of_measurement == 1}<td class="valuesunfocus">{else}<td class='currentvalues'>{/if}
-                <input type="text" size='5' id='head_circ_input_metric' value="{if $vitals->get_head_circ() != 0}{math equation="round(number * constant,1)" number=$vitals->get_head_circ() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('head_circ_input');"/>
+                <input type="text" size='5' id='head_circ_input_metric' value="{if $vitals->get_head_circ() != 0}{math equation="number * constant" number=$vitals->get_head_circ() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('head_circ_input');"/>
                 </td>
         {foreach item=result from=$results}
                 <td class='historicalvalues'>{if $result.head_circ != 0}{math equation="number * constant" number=$result.head_circ constant=2.54 format="%.2f"}{/if}</td>
@@ -276,7 +219,7 @@ td,th {
                 {if $units_of_measurement == 1}<td class="unfocus graph" id="waist_circ_metric">{else}<td class="graph" id="waist_circ_metric">{/if}{xl t="Waist Circumference"}</td>
 		{if $units_of_measurement == 1}<td class="unfocus">{else}<td>{/if}{xl t="cm"}</td>
                 {if $units_of_measurement == 1}<td class="valuesunfocus">{else}<td class='currentvalues'>{/if}
-                <input type="text" size='5' id='waist_circ_input_metric' value="{if $vitals->get_waist_circ() != 0}{math equation="round(number * constant,1)" number=$vitals->get_waist_circ() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('waist_circ_input');"/>
+                <input type="text" size='5' id='waist_circ_input_metric' value="{if $vitals->get_waist_circ() != 0}{math equation="number * constant" number=$vitals->get_waist_circ() constant=2.54 format="%.2f"}{/if}" onChange="convCmtoIn('waist_circ_input');"/>
                 </td>
         {foreach item=result from=$results}
                 <td class='historicalvalues'>{if $result.waist_circ != 0}{math equation="number * constant" number=$result.waist_circ constant=2.54 format="%.2f"}{/if}</td>
@@ -289,14 +232,60 @@ td,th {
 		<td class='historicalvalues'>{if $result.BMI != 0}{$result.BMI|substr:0:5}{/if}</td>
 	{/foreach}</tr>
 
+  {if $patient_age <= 20 || (preg_match('/month/', $patient_age))}
+    <tr>
+        <td>{xl t="BMI Pct"}</td>
+        <td></td>
+        <td class='currentvalues'><span id="BMI_pct">&nbsp;</span></td>
+        {foreach item=result from=$results}
+          <td  class='historicalvalues'>{$result.BMI_pct}</td>
+        {/foreach}      
+    </tr>
+
+  {/if}
   <tr><td>{xl t="BMI Status"}</td><td>{xl t="Type"}</td>
     <td class='currentvalues'><input type="text" size='15'
-    name="BMI_status" id="BMI_status' value="{$vitals->get_BMI_status()}"/></td>
+    name="BMI_status" id="BMI_status" value="{$vitals->get_BMI_status()}"/></td>
   {foreach item=result from=$results}
     <td  class='historicalvalues'>{if $result.BMI_status}{xl t=$result.BMI_status}{/if}</td>
   {/foreach}
   </tr>
-
+  {if $patient_age_months <= 240}
+    <tr>
+        <td>{xl t="Weight Pct"}</td>
+        <td></td>
+        <td class='currentvalues'><span id="weight_pct">&nbsp;</span></td>
+        {foreach item=result from=$results}
+          <td  class='historicalvalues'>{$result.weight_pct}</td>
+        {/foreach}      
+    </tr>
+    <tr>
+        <td>{xl t="Height Pct"}</td>
+        <td></td>
+        <td class='currentvalues'><span id="height_pct">&nbsp;</span></td>
+        {foreach item=result from=$results}
+          <td  class='historicalvalues'>{$result.height_pct}</td>
+        {/foreach}      
+    </tr>
+    <tr>
+        <td>{xl t="Weight for Height"}</td>
+        <td></td>
+        <td class='currentvalues'><span id="weight_height_pct">&nbsp;</span></td>
+        {foreach item=result from=$results}
+          <td  class='historicalvalues'>{$result.weight_height_pct}</td>
+        {/foreach}      
+    </tr>       
+  {/if}
+  {if $patient_age_months <= 24}
+    <tr>
+        <td>{xl t="Head Circ Pct"}</td>
+        <td></td>
+        <td class='currentvalues'><span id="head_pct">&nbsp;</span></td>
+        {foreach item=result from=$results}
+          <td  class='historicalvalues'>{$result.head_pct}</td>
+        {/foreach}      
+    </tr>         
+  {/if}
   <tr><td>{xl t="Other Notes"}<td></td></td>
     <td class='currentvalues'><input type="text" size='20'
       name="note" id='note' value="{$vitals->get_note()}" /></td>
@@ -343,7 +332,9 @@ vitals[0] = formdate+'-{$vitals->get_height()}-{$vitals->get_weight()}-{$vitals-
 vitals[vitals.length] = '{$result.date|date_format:"%Y%m%d"}-{$result.height}-{$result.weight}-{$result.head_circ}';
 {/foreach}
 var patientAge='{$patient_age}';
+var patientAgeMos='{$patient_age_months}';
 var patient_dob='{$patient_dob}';
+var patient_sex='{$patient_sex}';
 var webroot = '{$FORM_ACTION}';
 var pid = '{$vitals->get_pid()}';
 var cancellink = '{$DONT_SAVE_LINK}';
@@ -550,10 +541,51 @@ function calculateBMI() {
     else {
         $("#BMI_input").val("");
     }
+
+    // Calculate the percentiles
+    if(patientAgeMos<240)
+    {
+        getPercentiles(weight/2.204,height*2.54,bmi,$("#head_circ_input").val()*2.54);
+    }
 }
 
+function getPercentiles(weight,height,bmi,head)
+{
+    var ajax=webroot+"/interface/stats/ajax/percentiles.php";
+    var date=$("#date").val();
+    $.ajax(
+        {
+            url:ajax,
+            dataType:"json",
+            type: "POST",
+            data:{
+                dob:patient_dob,
+                pid:pid,
+                date: date,
+                sex: patient_sex,
+                weight: weight,
+                height: height,
+                bmi:bmi,
+                head:head
+                
+            },
+            success: function(data)
+            {
+                $("#BMI_pct").text(data.BMI_pct);
+                $("#BMI_status").val(data.BMI_status);
+                $("#weight_pct").text(data.weight_pct);
+                $("#height_pct").text(data.height_pct);
+                $("#weight_height_pct").text(data.weight_height_pct);
+                $("#head_pct").text(data.head_pct);
+            }
+        });
+}
 Calendar.setup({inputField:"date", ifFormat:"%Y-%m-%d %H:%M", button:"img_date", showsTime:true});
-
+{/literal}
+        {if patient_age_months <= 240 }        
+            getPercentiles($("#weight_input").val()/2.204,$("#height_input").val()*2.54,$("#BMI_input").val(),$("#head_circ_input").val()*2.54);
+        {/if}    
+{literal}
 </script>
 {/literal}
 

@@ -47,7 +47,7 @@ if ($pid == "") {
 $patient_data = "";
 if (isset($pid) && is_numeric($pid)) {
     $patient_data = getPatientData($pid, "fname, lname, sex, DATE_FORMAT(DOB,'%Y%m%d') as DOB");
-    $nowAge = getPatientAge($patient_data['DOB']);
+    $nowAge = getPatientAge($patient_data['DOB']); 
     $dob = $patient_data['DOB'];
     $name = $patient_data['fname'] ." ".$patient_data['lname'];
 }
@@ -121,38 +121,36 @@ if ($charttype == 'birth') {
     $delta_y1 = 24.92;    //pixels per inch  - height
     $dot_y2 = 1170;       //weight starts here - at 3 lbs
     $delta_y2 = 22.16;    //pixels per pound - weight
-
+	
     $HC_dot_x = 1180;     //months starts here for Head circumference chart
     $HC_delta_x = 26.04;  //pixels per month for Head circumference chart
     $HC_dot_y =  764;     //Head circumference starts here - at 11 inches
     $HC_delta_y = 60.00;  //calculated pixels per inch for head circumference
-
+	
 	$WT_y = 1127; //start here to draw wt and height graph at bottom of Head circumference chart
 	$WT_delta_y = 12.96;
 	$HT_x = 1187; //start here to draw wt and height graph at bottom of Head circumference chart 
 	$HT_delta_x = 24.32;
 	
-    if (preg_match('/^male/i', $patient_data['sex'])) {
+    if (preg_match('/^male/i', $patient_data['sex'])) { 
         $chart = "birth-24mos_boys_HC.png";
 
         // added by BM for CSS html output
         $chartCss1 = "birth-24mos_boys_HC-1.png";
-        $chartCss2 = "birth-24mos_boys_HC-2.png";
+        $chartCss2 = "birth-24mos_boys_HC-2.png"; 
     }
-    elseif (preg_match('/^female/i', $patient_data['sex'])) {
+    elseif (preg_match('/^female/i', $patient_data['sex'])) { 
         $chart = "birth-24mos_girls_HC.png";
 
         // added by BM for CSS html output
         $chartCss1 = "birth-24mos_girls_HC-1.png";
-        $chartCss2 = "birth-24mos_girls_HC-2.png";
+        $chartCss2 = "birth-24mos_girls_HC-2.png"; 
     }
 
     $ageOffset = 0;
     $heightOffset = 15; // Substract 15 because the graph starts at 15 inches
-    $weightOffset = 3;  // graph starts at 3 lbs
-	$WToffset = 0; //for wt and ht table at bottom half of HC graph
-	$HToffset = 18; // starting inch for wt and ht table at bottom half of HC graph
-
+    $weightOffset = 3;  // graph starts at 0 lbs
+    
     // pixel positions and offsets for data table
     $datatable_x = 370;
     $datatable_age_offset = 75;
@@ -170,30 +168,30 @@ if ($charttype == 'birth') {
     $datatable2_hc_offset = 290;
     $datatable2_y = 1098;
     $datatable2_y_increment = 18;
-}
+}	
 elseif ($charttype == "2-20") {
     // current patient age between 2 and 20 years
 
     $dot_x = 177;
-    $delta_x = 35.17;
+    $delta_x = 35.17;  
     $dot_y1 = 945;
     $delta_y1 = 16.74;
     $dot_y2 = 1176; //at 14 lbs,  1157 at 20 lbs
     $delta_y2 = 3.01;
 
     $bmi_dot_x = 1135;
-    $bmi_delta_x = 39.89;
+    $bmi_delta_x = 39.89;  
     $bmi_dot_y = 1130;
     $bmi_delta_y = 37.15;
 
-    if (preg_match('/^male/i', $patient_data['sex'])) {
+    if (preg_match('/^male/i', $patient_data['sex'])) { 
         $chart = "2-20yo_boys_BMI.png";
 
         // added by BM for CSS html output
         $chartCss1 = "2-20yo_boys_BMI-1.png";
         $chartCss2 = "2-20yo_boys_BMI-2.png";
     }
-    elseif (preg_match('/^female/i', $patient_data['sex'])) {
+    elseif (preg_match('/^female/i', $patient_data['sex'])) { 
         $chart = "2-20yo_girls_BMI.png";
 
         // added by BM for CSS html output
@@ -307,11 +305,10 @@ function cssHeader() {
 	    	}	
 	    }	
 	}	
-  function pagePrint(title) {
-    changeStyle(title);
-    var win = top.printLogPrint ? top : opener.top;
-    win.printLogPrint(window);
-  }
+	function pagePrint(title) {
+            changeStyle(title);
+	    window.print();
+        }	
     </SCRIPT>
     <title><?php xl('Growth Chart','e'); ?></title>
     </head>
@@ -374,7 +371,7 @@ function convertpoint($coord) {
 	$page = "page2";
     }
     else {
-        $page = "page1";
+        $page = "page1";	
     }
     
     //calculate conversion to pt (decrease number of decimals)
@@ -433,7 +430,7 @@ if ($_GET['html'] == 1) {
         // Draw Height dot
         $y1 = $dot_y1 - $delta_y1 * ($height - $heightOffset);
         $point = convertpoint(Array($x,$y1));
-        echo("<div id='" . $point[2]  . "' class='graphic' style='position: absolute; top: " . $point[1]  . "pt; left: " . $point[0] . "pt;'><img src='reddot.gif' /></div>\n");
+        echo("<div id='" . $point[2]  . "' class='graphic' style='position: absolute; top: " . $point[1]  . "pt; left: " . $point[0] . "pt;'><img src='reddot.gif' /></div>\n");        
 
         // Draw Weight bullseye
         $y2 = $dot_y2 - $delta_y2 * ($weight - $weightOffset);
@@ -559,7 +556,7 @@ foreach ($datapoints as $data) {
     
     // get age of patient at this data-point
     // to get data from function getPatientAgeYMD including $age, $ageinYMD, $age_in_months
-    extract(getPatientAgeYMD($dob, $date));
+    extract(getPatientAgeYMD($dob, $date)); 
     if($charttype=='birth')
     {
         // for birth style chart, we use the age in months        
@@ -584,10 +581,10 @@ foreach ($datapoints as $data) {
     $y2 = $dot_y2 - $delta_y2 * ($weight - $weightOffset);
     imageellipse($im, $x, $y2, 12, 12, $color); // outter ring
     imagefilledellipse($im, $x, $y2, 5, 5, $color); //center dot
-
+	  
     if ($charttype == "birth") {
         // Draw Head circumference
-        $HC_x = $HC_dot_x + $HC_delta_x * $age;
+        $HC_x = $HC_dot_x + $HC_delta_x * $age; 
         $HC_y = $HC_dot_y - $HC_delta_y * ($head_circ - 11);
         imagefilledellipse($im, $HC_x, $HC_y, 10, 10, $color1);
 		// Draw Wt and Ht graph at the bottom half
@@ -604,7 +601,7 @@ foreach ($datapoints as $data) {
     }
 		
     // fill in data tables
-
+    
     $datestr = substr($date,0,4)."/".substr($date,4,2)."/".substr($date,6,2);
     
     //birth to 24 mos chart has 8 rows to fill.
@@ -647,11 +644,12 @@ foreach ($datapoints as $data) {
         $datatable2_y = $datatable2_y + $datatable2_y_increment; // increment the datatable2 "row pointer"
     }
 
-    $count++;
+    $count++;	
 }
 
 if ($_GET['pdf'] == 1) {
-    $pdf = new Cezpdf("LETTER");
+    require_once ($GLOBALS['fileroot'] . "/library/classes/class.ezpdf.php");
+    $pdf =& new Cezpdf("LETTER");
     $pdf->ezSetMargins(0,0,0,0);
 
     // we start with one large image, break it into two pages
@@ -679,7 +677,7 @@ if ($_GET['pdf'] == 1) {
 }
 else {
     // older style chart that is simply a PNG image
-    header("Content-type: image/png");
+    header("Content-type: image/png"); 
     imagepng($im);
     imagedestroy($im);
 }

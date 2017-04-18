@@ -611,6 +611,9 @@ function generate_form_field($frow, $currvalue) {
     }
   }
 
+
+
+
   // insurance company list
   else if ($data_type == 16) {
     echo "<select name='form_$field_id_esc' id='form_$field_id_esc' title='$description'>";
@@ -688,6 +691,61 @@ function generate_form_field($frow, $currvalue) {
     else {
       echo "</select>";
     }
+  }
+
+  else if ($data_type == 20) {
+      // In this special case, fld_length is the number of columns generated.
+      $cols = max(1, $frow['fld_length']);
+      $avalue = explode('|', $currvalue);
+      $lres = sqlStatement("SELECT * FROM list_options " .
+          "WHERE list_id = ? ORDER BY seq, title", array($list_id) );
+      echo "<table cellpadding='0' cellspacing='0' width='100%'>";
+      $listName = $frow['list_id'];
+      $tdpct = (int) (100 / $cols);
+      echo '<input type="checkbox" id="'.$listName.'" /><b> Check all </b><br>';
+
+      for ($count = 0; $lrow = sqlFetchArray($lres); ++$count) {
+
+          $option_id = $lrow['option_id'];
+          $option_id_esc = htmlspecialchars( $option_id, ENT_QUOTES);
+          // if ($count) echo "<br />";
+          if ($count % $cols == 0) {
+              if ($count) echo "</tr>";
+              echo "<tr>";
+          }
+          echo "<td width='$tdpct%'>";
+          echo "<input class='$listName' type='checkbox' name='form_{$field_id_esc}[$option_id_esc]' id='form_{$field_id_esc}[$option_id_esc]' value='1'";
+          if (in_array($option_id, $avalue)) echo " checked";
+
+          // Added 5-09 by BM - Translate label if applicable
+          echo ">" . htmlspecialchars( xl_list_label($lrow['title']), ENT_NOQUOTES);
+
+          echo "</td>";
+      }
+      echo '</div>';
+
+
+
+      if ($count) {
+          echo "</tr>";
+          if ($count > $cols) {
+              // Add some space after multiple rows of checkboxes.
+              $cols = htmlspecialchars( $cols, ENT_QUOTES);
+              echo "<tr><td colspan='$cols' style='height:0.7em'></td></tr>";
+          }
+      }
+
+      echo "</table>";
+      ?>
+
+      <script>
+
+          $('<?php echo "#".$listName ?>').change(function() {
+              $('<?php echo ".$listName" ?>').click();
+
+          });
+      </script>
+      <?php
   }
 
   // a set of labeled checkboxes
@@ -1381,7 +1439,7 @@ function generate_print_field($frow, $currvalue) {
   }
 
   // a set of labeled checkboxes
-  else if ($data_type == 21) {
+  else if ($data_type == 21 || $data_type == 20) {
     // In this special case, fld_length is the number of columns generated.
     $cols = max(1, $fld_length);
     $avalue = explode('|', $currvalue);
@@ -1848,7 +1906,7 @@ function generate_display_field($frow, $currvalue) {
   }
 
   // a set of labeled checkboxes
-  else if ($data_type == 21) {
+  else if ($data_type == 21 || $data_type == 20) {
     $avalue = explode('|', $currvalue);
     $lres = sqlStatement("SELECT * FROM list_options " .
       "WHERE list_id = ? AND activity = 1 ORDER BY seq, title", array($list_id) );
@@ -2745,7 +2803,7 @@ function get_layout_form_value($frow, $prefix='form_') {
   $field_id  = $frow['field_id'];
   $value  = '';
   if (isset($_POST["$prefix$field_id"])) {
-    if ($data_type == 21) {
+    if ($data_type == 21 || $data_type == 20) {
       // $_POST["$prefix$field_id"] is an array of checkboxes and its keys
       // must be concatenated into a |-separated string.
       foreach ($_POST["$prefix$field_id"] as $key => $val) {

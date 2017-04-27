@@ -8,11 +8,12 @@ require_once("FormVitals.class.php");
 
 class C_FormVitals extends Controller {
 
-	var $template_dir;
+    var $template_dir;
+    var $form_id;
 
-    function C_FormVitals($template_mod = "general") {
-    	parent::Controller();
-    	$returnurl = $GLOBALS['concurrent_layout'] ? 'encounter_top.php' : 'patient_encounter.php';
+    function __construct($template_mod = "general") {
+    	parent::__construct();
+    	$returnurl = 'encounter_top.php';
     	$this->template_mod = $template_mod;
     	$this->template_dir = dirname(__FILE__) . "/templates/vitals/";
     	$this->assign("FORM_ACTION", $GLOBALS['web_root']);
@@ -33,7 +34,13 @@ class C_FormVitals extends Controller {
     	return $this->fetch($this->template_dir . $this->template_mod . "_new.html");
 	}
 
-    function default_action($form_id) {
+    function setFormId($form_id){
+        $this->form_id = $form_id;
+    }
+
+    function default_action() {
+
+        $form_id = $this->form_id;
 
         if (is_numeric($form_id)) {
     		$vitals = new FormVitals($form_id);
@@ -79,6 +86,7 @@ class C_FormVitals extends Controller {
             $results[$i]['pulse'] = $result->fields['pulse'];
             $results[$i]['respiration'] = $result->fields['respiration'];
             $results[$i]['BMI'] = $result->fields['BMI'];
+    		$results[$i]['BMI_status'] = $result->fields['BMI_status'];
             $results[$i]['note'] = $result->fields['note'];
             $results[$i]['waist_circ'] = $result->fields['waist_circ'];
             $results[$i]['head_circ'] = $result->fields['head_circ'];

@@ -27,6 +27,16 @@ $fake_register_globals=false;
 
 require_once("../../globals.php");
 
+
+
+
+
+
+
+
+
+
+
 ?>
 <div id='vitals' style='margin-top: 3px; margin-left: 10px; margin-right: 10px'><!--outer div-->
 <br>
@@ -52,6 +62,9 @@ if ( !$result ) //If there are no disclosures recorded
   call_user_func("vitals_report", '', '', 2, $result['id']);
   ?>  <span class='text'>
   <br />
+  <script src='vitals_fragment.js' type='text/javascript'></script>
+  <a onclick='showGrowthChart()'><?php echo xlt('Show Growth Chart')?></a>
+  <br>
   <a href='../encounter/trend_form.php?formname=vitals' onclick='top.restoreSession()'><?php echo htmlspecialchars(xl('Click here to view and graph all vitals.'),ENT_NOQUOTES);?></a>
   </span><?php
 } ?>

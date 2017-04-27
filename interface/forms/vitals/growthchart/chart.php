@@ -305,10 +305,11 @@ function cssHeader() {
 	    	}	
 	    }	
 	}	
-	function pagePrint(title) {
-            changeStyle(title);
-	    window.print();
-        }	
+  function pagePrint(title) {
+    changeStyle(title);
+    var win = top.printLogPrint ? top : opener.top;
+    win.printLogPrint(window);
+  }
     </SCRIPT>
     <title><?php xl('Growth Chart','e'); ?></title>
     </head>
@@ -648,8 +649,7 @@ foreach ($datapoints as $data) {
 }
 
 if ($_GET['pdf'] == 1) {
-    require_once ($GLOBALS['fileroot'] . "/library/classes/class.ezpdf.php");
-    $pdf =& new Cezpdf("LETTER");
+    $pdf = new Cezpdf("LETTER");
     $pdf->ezSetMargins(0,0,0,0);
 
     // we start with one large image, break it into two pages

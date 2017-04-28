@@ -16,12 +16,6 @@
  * @package OpenEMR
  * @author  Rod Roark <rod@sunsetsystems.com>
  * @link    http://www.open-emr.org
- *
- *
- * Modified by Daniel Pflieger to add check-all box in LBFs.  This modification
- * allows end users to check all boxes at once instead of having to check each box individually.
- *
- * @modifier: Daniel Pflieger <daniel@mi-squared.com>
  */
 
 //SANITIZE ALL ESCAPES
@@ -247,7 +241,6 @@ div.section {
 </style>
 
 <style type="text/css">@import url(../../../library/dynarch_calendar.css);</style>
-<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $GLOBALS['webroot'] ?>/library/js/fancybox/jquery.fancybox-1.2.6.css" media="screen" />
 <script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js?v=<?php echo $v_js_includes; ?>"></script>

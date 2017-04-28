@@ -2,7 +2,7 @@
 include_once("../../globals.php");
 include_once($GLOBALS["srcdir"]."/api.inc");
 include_once ($GLOBALS['fileroot']."/library/patient.inc");
-require_once($GLOBALS['fileroot']."/interface/stats/growth_stats.php");
+
 
 function US_weight($pounds,$mode=1)
 {
@@ -15,11 +15,6 @@ function US_weight($pounds,$mode=1)
     {
         $pounds_int=floor($pounds);
         $ounces=round(($pounds-$pounds_int)*16);
-        if($ounces==16)
-        {
-            $ounces=0;
-            $pounds_int++;
-        }
         return $pounds_int . " " . xl('lb') . " " . $ounces . " " . xl('oz');
     }
 }
@@ -29,70 +24,43 @@ function vitals_report( $pid, $encounter, $cols, $id, $print = true) {
   $data = formFetch("form_vitals", $id);
   $patient_data = getPatientData($GLOBALS['pid']);
   $patient_age = getPatientAge($patient_data['DOB']);
-  $ageYMD=getPatientAgeYMD($patient_data['DOB'],$data['date']);
-  $age_in_months = $ageYMD['age_in_months'];
-  // error_log("Age:".$age_in_months);
-  if($age_in_months<=24)
-  {
-      $who_data=get_who_stats($age_in_months,$patient_data['sex'],$data['weight']/2.204,$data['height']*2.54,$data['head_circ']*2.54);
-      $data["Height %ile"]=number_format($who_data['height_pct'],1);
-      $data["Weight %ile"]=number_format($who_data['weight_pct'],1);
-      $data["Weight for Height %ile"]=number_format($who_data['weight_height_pct'],1);
-      $data["Head Circ %ile"]=number_format($who_data['head_pct'],1);
-  }
-  if(($age_in_months>=23.5) && ($age_in_months<240.5))
-  {
-      $cdc_data=get_cdc_stats($age_in_months,$patient_data['sex'],$data['weight']/2.204,$data['height']*2.54,$data['BMI']);
-      $data["Height %ile"]=number_format($cdc_data['height_pct'],1);
-      $data["Weight %ile"]=number_format($cdc_data['weight_pct'],1);
-      $data["Weight for Height %ile"]=number_format($cdc_data['weight_height_pct'],1);
-  }
+
+  $vitals="";
   if ($data) {
-    $vitals = "<table><tr>";
+    $vitals .= "<table><tr>";
 
     foreach($data as $key => $value) {
 
-      if ($key == "id" || $key == "pid" || 
-          $key == "user" || $key == "groupname" || 
-          $key == "authorized" || $key == "activity" || 
-          $key == "date" || $value == "" || 
+      if ($key == "id" || $key == "pid" ||
+          $key == "user" || $key == "groupname" ||
+          $key == "authorized" || $key == "activity" ||
+          $key == "date" || $value == "" ||
           $value == "0000-00-00 00:00:00" || $value == "0.0" )
       {
         // skip certain data
         continue;
       }
 
-      if ($value == "on") { $value = "yes"; } 
+      if ($value == "on") { $value = "yes"; }
 
       $key = ucwords(str_replace("_"," ",$key));
 
       //modified by BM 06-2009 for required translation
-      if ($key == "Temp Method" || $key == "BMI Status") { 
+      if ($key == "Temp Method" || $key == "BMI Status") {
         if ($key == "BMI Status") {
-          if ($patient_age <= 20 || (preg_match('/month/', $patient_age))) { 
-            $value = "See Growth-Chart"; 
-            if($age_in_months>=24)
-            {
-
-                $pct=number_format($cdc_data['BMI_pct'],1);
-                $value=$pct."%";
-                $value.=" (".$cdc_data['BMI_status'].")";
-            }
-            if($age_in_months<24)
-            {
-                $value = "Undefined";
-            }
+          if ($patient_age <= 20 || (preg_match('/month/', $patient_age))) {
+            $value = "See Growth-Chart";
           }
         }
-        $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>" . xl($value) . "</span></td>"; 
-      } 
+        $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>" . xl($value) . "</span></td>";
+      }
       elseif ($key == "Bps") {
         $bps = $value;
         if ($bpd) {
           $vitals .= "<td><span class=bold>" . xl('Blood Pressure') . ": </span><span class=text>" . $bps . "/". $bpd  . "</span></td>";
         }
         else {
-          continue;   
+          continue;
         }
       }
       elseif ($key == "Bpd") {
@@ -101,7 +69,7 @@ function vitals_report( $pid, $encounter, $cols, $id, $print = true) {
           $vitals .= "<td><span class=bold>" . xl('Blood Pressure') . ": </span><span class=text>" . $bps . "/". $bpd  . "</span></td>";
         }
         else {
-          continue;   
+          continue;
         }
       }
       elseif ($key == "Weight") {
@@ -124,9 +92,9 @@ function vitals_report( $pid, $encounter, $cols, $id, $print = true) {
         $vitals.= "</span></td>";
       }
       elseif ($key == "Height" || $key == "Waist Circ"  || $key == "Head Circ") {
-        $convValue = number_format($value*2.54,2);
+        $convValue = round(number_format($value*2.54,2),1);
         // show appropriate units
-        if ($GLOBALS['units_of_measurement'] == 2) { 
+        if ($GLOBALS['units_of_measurement'] == 2) {
           $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>" . $convValue . " " . xl('cm') . " (" . $value . " " . xl('in')  . ")</span></td>";
         }
         elseif ($GLOBALS['units_of_measurement'] == 3) {
@@ -168,9 +136,9 @@ function vitals_report( $pid, $encounter, $cols, $id, $print = true) {
           $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>" . $value . " " . xl('per min') . "</span></td>";
         }
       }
-      else { 
-        $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>$value</span></td>"; 
-      } 
+      else {
+        $vitals .= "<td><span class=bold>" . xl($key) . ": </span><span class=text>" . text($value) . "</span></td>";
+      }
 
       $count++;
 

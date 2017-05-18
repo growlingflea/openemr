@@ -164,12 +164,7 @@ if (file_exists(dirname(__FILE__) . "/../../forms/track_anything/style.css")) { 
 <?php  } ?>
 
 </head>
-<?php 
-// remove blank header for printable version to conserve space
-// adjust this if you are printing to letterhead to appropriate height
-($printable) ? ($style = ''):($style='padding-top:95px;');
-?>
-<body class="body_top" style="<?php echo $style; ?>">
+<body class="body_top" style="padding-top:95px;">
 <?php } ?>
 <div id="report_custom" style="width:100%;">  <!-- large outer DIV -->
 
@@ -194,24 +189,19 @@ if ($printable) {
   if (!$results->EOF) {
     $facility = $results->fields;
   }
-  // Setup Headers and Footers for html2PDF only Download
-  // in HTML view it's just one line at the top of page 1
-  echo '<page_header style="text-align:right;" class="custom-tag"> ' . xlt("PATIENT") . ':' . text($titleres['lname']) . ', ' . text($titleres['fname']) . ' - ' . $titleres['DOB_TS'] . '</page_header>    ';
-  echo '<page_footer style="text-align:right;" class="custom-tag">' . xlt('Generated on') . ' ' . oeFormatShortDate() . ' - ' . text($facility['name']) . ' ' . text($facility['phone']) . '</page_footer>';
-
-  // Use logo if it exists as 'practice_logo.gif' in the site dir
-  // old code used the global custom dir which is no longer a valid
-   $practice_logo = "$OE_SITE_DIR/images/practice_logo.gif";
+  $practice_logo = "../../../custom/test.gif";
    if (file_exists($practice_logo)) {
-        echo "<img src='$practice_logo' align='left'><br />\n";
+    echo "<img src='$practice_logo' align='left'><br>";
      }
 ?>
-<h2><?php echo $facility['name'] ?></h2>
+<img src="../../../images/santiago_logo.jpg" width="300" height="125"><br><br>
+<h1><?php echo $facility['name'] ?></h1>
 <?php echo $facility['street'] ?><br>
 <?php echo $facility['city'] ?>, <?php echo $facility['state'] ?> <?php echo $facility['postal_code'] ?><br clear='all'>
 <?php echo $facility['phone'] ?><br>
 
 <a href="javascript:window.close();"><span class='title'><?php echo $titleres['fname'] . " " . $titleres['lname']; ?></span></a><br>
+<span class='text'><?php echo xl('DOB').":".$titleres['DOB_TS'] ?></span><br>
 <span class='text'><?php xl('Generated on','e'); ?>: <?php echo oeFormatShortDate(); ?></span>
 <br><br>
 

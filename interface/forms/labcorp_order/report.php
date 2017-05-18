@@ -33,7 +33,7 @@ include_once("{$GLOBALS['srcdir']}/api.inc");
 include_once("{$GLOBALS['srcdir']}/wmt/wmt.class.php");
 include_once("{$GLOBALS['srcdir']}/wmt/wmt.report.php");
 include_once("{$GLOBALS['srcdir']}/wmt/wmt.forms.php");
-require_once("{$GLOBALS['srcdir']}/wmt/wmt.include.php");
+include_once("{$GLOBALS['srcdir']}/wmt/wmt.include.php");
 
 if (!function_exists("labcorp_order_report")) { // prevent redeclarations
 

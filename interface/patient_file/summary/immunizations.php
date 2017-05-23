@@ -76,7 +76,7 @@ if (isset($_GET['mode'])) {
             trim($_GET['vfc'])          //added for CAIR2
 		     );
         $newid = sqlInsert($sql,$sqlBindArray);
-        $administered_date=date('Y-m-d H:i');
+        $administered_date=date('Y-m-d H:i:s');
 		$education_date=date('Y-m-d');
         $immunization_id=$cvx_code=$manufacturer=$lot_number=$administered_by_id=$note=$id=$ordered_by_id="";
         $administered_by=$vis_date="";
@@ -109,7 +109,7 @@ if (isset($_GET['mode'])) {
         $result = sqlQuery($sql, array($_GET['id']));
 		
 		$administered_date = new DateTime($result['administered_date']);
-		$administered_date = $administered_date->format('Y-m-d H:i');
+		$administered_date = $administered_date->format('Y-m-d H:i:s');
 		
 		$immuniz_amt_adminstrd = $result['amount_administered'];
 		$drugunitselecteditem = $result['amount_administered_unit'];
@@ -318,7 +318,7 @@ function saveImmunizationObservationResults($id,$immunizationdata)
 <?php html_header_show();?>
 
 <!-- supporting javascript code -->
-<script type="text/javascript" src="<?php echo $GLOBALS['assets_static_relative']; ?>/jquery-min-1-2-1/index.js"></script>
+<script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/textformat.js"></script>
 <script type="text/javascript" src="<?php echo $GLOBALS['webroot'] ?>/library/dialog.js?v=<?php echo $v_js_includes; ?>"></script>
 
@@ -398,8 +398,8 @@ var mypcc = '<?php echo htmlspecialchars( $GLOBALS['phone_country_code'], ENT_QU
           <td><table border="0">
      <tr>
        <td><input type='text' size='14' name="administered_date" id="administered_date"
-    		value='<?php echo $administered_date ? htmlspecialchars( $administered_date, ENT_QUOTES) : date('Y-m-d H:i'); ?>'
-    		title='<?php echo htmlspecialchars( xl('yyyy-mm-dd Hours(24):minutes'), ENT_QUOTES); ?>'
+    		value='<?php echo $administered_date ? htmlspecialchars( $administered_date, ENT_QUOTES) : date('Y-m-d H:i:s'); ?>'
+    		title='<?php echo htmlspecialchars( xl('yyyy-mm-dd Hours(24):minutes:seconds'), ENT_QUOTES); ?>'
     		onKeyUp='datekeyup(this,mypcc)' onBlur='dateblur(this,mypcc);'
     		/>
          	<img src='<?php echo $rootdir; ?>/pic/show_calendar.gif' align='absbottom' width='24' height='22'

@@ -24,6 +24,7 @@ $sanitize_all_escapes=true;
 
 require_once("../../../globals.php");
 require_once("fee_sheet_queries.php");
+include_once("$srcdir/jsonwrapper/jsonwrapper.php");
 
 if(!acl_check('acct', 'bill'))
 {
@@ -83,6 +84,15 @@ if($task=='retrieve')
 }
 if($task=='add_diags')
 {
+    if($req_encounter==0)
+    {
+        $req_encounter=$_SESSION['encounter'];
+    }
+    if($req_encounter==0)
+    {
+        echo "No Encounter Specified";
+        return;
+    }
     if(isset($_REQUEST['diags']))
     {
         $json_diags=json_decode($_REQUEST['diags']);

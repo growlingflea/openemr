@@ -41,13 +41,12 @@ if (isset($_GET['mode'])) {
 					  amount_administered_unit = ?,
 					  expiration_date = if(?,?,NULL),
 					  route = ?,
-					  administration_site = ? ,
-					   historical = ?,
-                      vfc = ?,
+					  administration_site = ? ,					
                       completion_status = ?,
                       information_source = ?,
                       refusal_reason = ?,
-                      ordering_provider = ?";
+                      ordering_provider = ?,   historical = ?,
+                      vfc = ? ";
 	$sqlBindArray = array(
 	             trim($_GET['id']),
 		     trim($_GET['administered_date']), trim($_GET['administered_date']),

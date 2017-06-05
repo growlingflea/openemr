@@ -105,7 +105,19 @@ if(isset($_GET['action'])) {
     }
 }
 
-$results = sqlStatement("SELECT * FROM immunizations_schedules_codes");
+$query = "SELECT ims.*, iso.*, isc.*, ims.description as 'age_desc'
+        FROM immunizations_schedules ims
+        JOIN immunizations_schedules_options iso ON ims.id = iso.schedule_id
+        JOIN immunizations_schedules_codes isc ON isc.id = iso.code_id
+        ";
+
+if($_GET['action'] === "sort"){
+
+    $query .= "Order by ". $_GET['value'];
+
+}
+
+$results = sqlStatement($query);
 
 require_once 'temp/view_table.php';
 

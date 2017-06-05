@@ -55,13 +55,13 @@
 <table cellspacing="0" class="immunization_codes">
     <thead>
     <tr>
-        <th>Description</th>
-        <th>Manufacturer</th>
-        <th>Cvx code</th>
+        <th><a href="codes.php?action=sort&value=isc.description">Description</a></th>
+        <th><a href="codes.php?action=sort&value=manufacturer">Manufacturer</a></th>
+        <th><a href="codes.php?action=sort&value=cvx_code">CVX Code</a></th>
         <th>Proc codes</th>
         <th>Justify codes</th>
         <th>Default site</th>
-        <th>Comments</th>
+        <th><a href="codes.php?action=sort&value=age">Age</a></th>
         <th>Drug route</th>
         <td></td>
     </tr>
@@ -77,7 +77,7 @@
             <td><?=$row['proc_codes']?></td>
             <td><?=$row['justify_codes']?></td>
             <td><?=$row['default_site']?></td>
-            <td><?=$row['comments']?></td>
+            <td><?=$row['age_desc']?></td>
             <td><?=$row['drug_route']?></td>
             <td><a href="codes.php?action=edit&id=<?=$row['id']?>"">Edit</a>
                 <a href="codes.php?action=del&id=<?=$row['id']?>" onclick="return confirm('Are you sure you want to delete this code?') ? true : false">Del</a>

@@ -29,7 +29,7 @@
             <td><?=$row['comments']?></td>
             <td><?=$row['drug_route']?></td>
             <td>
-                <a href="./codes.php?action=del&id=<?=$row['id']?>" onclick="return confirm('Are you sure you want to delete this code?') ? true : false">Del</a>
+                <a href="./schedules.php?action=del&id=<?=$row['index']?>" onclick="return confirm('Are you sure you want to delete this code?') ? true : false">Del</a>
             </td>
         </tr>
         <?php

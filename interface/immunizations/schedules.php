@@ -16,7 +16,7 @@ if(isset($_POST['age_group_id'])) {
     if(empty($age_group_id)) {
         exit('');
     }
-    $query = sqlStatement("SELECT *
+    $query = sqlStatement("SELECT iso.id as 'index', ims.*, iso.*, isc.*
         FROM immunizations_schedules ims
         JOIN immunizations_schedules_options iso ON ims.id = iso.schedule_id
         JOIN immunizations_schedules_codes isc ON isc.id = iso.code_id
@@ -77,7 +77,7 @@ if(isset($_GET['action'])) {
             if(isset($_GET['id'])) {
                 $query = sqlStatement("SELECT * FROM immunizations_schedules WHERE id = ?", array('id' => $_GET['id']));
 
-                $result = sqlFetcharray($query);
+                $result = sqlFetchArray($query);
             }
             $action = "edit";
             require_once 'temp/schedule_form.php';
@@ -85,7 +85,8 @@ if(isset($_GET['action'])) {
             break;
         case 'del':
             if(isset($_GET['id'])) {
-                $query = sqlQuery("DELETE FROM immunizations_schedules WHERE id = ?", $_GET['id']);
+        $query = true;
+               $query = sqlStatement("DELETE FROM immunizations_schedules_options WHERE id = ?", $_GET['id']);
 
                 if($query) {
                     $successMessage = 'Schedule deleted success!';

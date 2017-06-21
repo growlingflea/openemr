@@ -2540,6 +2540,11 @@ function display_layout_tabs($formtype, $result1, $result2='') {
   }
 }
 
+function label_to_class($label)
+{
+    return preg_replace("/[^A-Za-z0-9]/", '', $label);
+}
+
 function display_layout_tabs_data($formtype, $result1, $result2='') {
   global $item_count, $cell_count, $last_group, $CPR,$condition_str;
 
@@ -2633,8 +2638,10 @@ function display_layout_tabs_data($formtype, $result1, $result2='') {
 					if ($datacols > 0) {
 					  disp_end_cell();
 					  $datacols_esc = htmlspecialchars( $datacols, ENT_QUOTES);
+                      $class = 'text data '.label_to_class($group_fields['title']);
+
 					  $field_id = 'text_'.$group_fields['field_id'];
-					  echo "<td class='text data' colspan='$datacols_esc' id='" . attr($field_id) . "'  data-value='" . attr($currvalue) . "'";
+					  echo "<td class='".$class. "' colspan='$datacols_esc'" . attr($field_id) . "'  data-value='" . attr($currvalue) . "'";
 					  echo ">";
 					  $cell_count += $datacols;
 					} else {

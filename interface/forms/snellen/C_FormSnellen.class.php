@@ -13,8 +13,8 @@ class C_FormSnellen extends Controller {
 
   var $template_dir;
 
-  function __construct($template_mod = "general") {
-    parent::__construct();
+  function C_FormSnellen($template_mod = "general") {
+    parent::Controller();
     $this->template_mod = $template_mod;
     $this->template_dir = dirname(__FILE__) . "/templates/";
     $this->assign("FORM_ACTION", $GLOBALS['web_root']);

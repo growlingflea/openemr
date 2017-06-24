@@ -1559,7 +1559,7 @@ expand_collapse_widget($widgetTitle, $widgetLabel, $widgetButtonLabel,
 
 	// Show PAST appointments.
 	// added by Terry Hill to allow reverse sorting of the appointments
- 	$direction = "ASC";
+ 	$direction = "DESC";
 	if ($GLOBALS['num_past_appointments_to_show'] < 0) {
 	   $direction = "DESC";
 	   ($showpast = -1 * $GLOBALS['num_past_appointments_to_show'] );

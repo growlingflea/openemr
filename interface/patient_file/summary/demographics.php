@@ -417,9 +417,30 @@ function setMyPatient() {
   return;
  }
 <?php if (isset($_GET['set_pid'])) { ?>
- parent.left_nav.setPatient(<?php echo "'" . addslashes($result['fname']) . " " . addslashes($result['lname']) .
-   "'," . addslashes($pid) . ",'" . addslashes($result['pubpid']) .
-   "','', ' " . xls('DOB') . ": " . addslashes(oeFormatShortDate($result['DOB_YMD'])) . " " . xls('Age') . ": " . addslashes(getPatientAgeDisplay($result['DOB_YMD'])) . "'"; ?>);
+    <?php if ($GLOBALS['new_tabs_layout']) {
+        $vital_result = sqlStatement("select weight, DATE_FORMAT(date, '%Y-%m-%d' ) as lastdate from form_vitals where weight > 0 and pid = ? order by date Desc", array($pid));
+        if(sqlNumRows($vital_result) > 0){
+            $weight_query = sqlFetchArray($vital_result);
+            $weight = $weight_query['weight'];
+            $weight_date = $weight_query['lastdate'];
+        }else {
+            $weight = $weight_date = '';
+        }
+
+
+
+    ?>
+
+     parent.left_nav.setPatient(<?php echo "'" . addslashes($result['fname']) . " " . addslashes($result['lname']) .
+       "'," . addslashes($pid) . ",'" . addslashes($result['pubpid']) .
+       "','', ' " . xls('DOB') . ": " . addslashes(oeFormatShortDate($result['DOB_YMD'])) . " " . xls('Age') . ": " . addslashes(getPatientAgeDisplay($result['DOB_YMD'])) . " " . xls('Weight (lbs)') . ": " .
+         addslashes($weight). " Last weight recorded: " . addslashes(oeFormatShortDate($weight_date)) . "'"; ?>);
+    <?php } else { ?>
+
+    parent.left_nav.setPatient(<?php echo "'" . addslashes($result['fname']) . " " . addslashes($result['lname']) .
+        "'," . addslashes($pid) . ",'" . addslashes($result['pubpid']) .
+        "','', ' " . xls('DOB') . ": " . addslashes(oeFormatShortDate($result['DOB_YMD'])) . " " . xls('Age') . ": " . addslashes(getPatientAgeDisplay($result['DOB_YMD'])) . "'"; ?>);
+    <?php } ?>
  var EncounterDateArray = new Array;
  var CalendarCategoryArray = new Array;
  var EncounterIdArray = new Array;

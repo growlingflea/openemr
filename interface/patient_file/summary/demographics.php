@@ -421,7 +421,7 @@ function setMyPatient() {
         $vital_result = sqlStatement("select weight, DATE_FORMAT(date, '%Y-%m-%d' ) as lastdate from form_vitals where weight > 0 and pid = ? order by date Desc", array($pid));
         if(sqlNumRows($vital_result) > 0){
             $weight_query = sqlFetchArray($vital_result);
-            $weight = $weight_query['weight'];
+            $weight = round($weight_query['weight']/2.204, 2);
             $weight_date = $weight_query['lastdate'];
         }else {
             $weight = $weight_date = '';
@@ -433,7 +433,7 @@ function setMyPatient() {
 
      parent.left_nav.setPatient(<?php echo "'" . addslashes($result['fname']) . " " . addslashes($result['lname']) .
        "'," . addslashes($pid) . ",'" . addslashes($result['pubpid']) .
-       "','', ' " . xls('DOB') . ": " . addslashes(oeFormatShortDate($result['DOB_YMD'])) . " " . xls('Age') . ": " . addslashes(getPatientAgeDisplay($result['DOB_YMD'])) . " " . xls('Weight (lbs)') . ": " .
+       "','', ' " . xls('DOB') . ": " . addslashes(oeFormatShortDate($result['DOB_YMD'])) . " " . xls('Age') . ": " . addslashes(getPatientAgeDisplay($result['DOB_YMD'])) . " " . xls('Weight (kg)') . ": " .
          addslashes($weight). " Last weight recorded: " . addslashes(oeFormatShortDate($weight_date)) . "'"; ?>);
     <?php } else { ?>
 

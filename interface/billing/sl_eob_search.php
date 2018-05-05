@@ -22,6 +22,11 @@
  * @author  Rod Roark <rod@sunsetsystems.com>
  * @author  Roberto Vasquez <robertogagliotta@gmail.com>
  * @link    http://www.open-emr.org
+ *
+ *
+ * Updated by Growlingflea Software.  now generates correct service and billing facility on statement.
+ * any questions contact Daniel Pflieger at daniel@growlingflea.com
+ *
  */
 
 require_once("../globals.php");
@@ -167,6 +172,7 @@ $today = date("Y-m-d");
       // If this is a new patient then print the pending statement
       // and start a new one.  This is an associative array:
       //
+      //  form_id = form id.  This is needed to get correct billing and service facility related to the encounter. //added by growlingflea
       //  cid     = same as pid
       //  pid     = OpenEMR patient ID
       //  patient = patient name
@@ -186,6 +192,7 @@ $today = date("Y-m-d");
       if ($stmt['cid'] != $row['pid']) {
         if (!empty($stmt)) ++$stmt_count;
         fwrite($fhprint, create_statement($stmt));
+        $stmt['fid'] = $row['id']; // added by growlingflea (Daniel Pflieger) so billing facility and service facility are handled correctly by the create_statement method
         $stmt['cid'] = $row['pid'];
         $stmt['pid'] = $row['pid'];
 		$stmt['dun_count'] = $row['stmt_count'];

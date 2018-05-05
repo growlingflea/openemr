@@ -11,6 +11,8 @@
 //
 // Updated by Medical Information Integration, LLC to support download
 //  and multi OS use - tony@mi-squared..com 12-2009
+//
+//
 
 //////////////////////////////////////////////////////////////////////
 // This is a template for printing patient statements and collection
@@ -107,25 +109,22 @@ function create_statement($stmt) {
  // These are your clinics return address, contact etc.  Edit them.
  // TBD: read this from the facility table
 
- // Facility (service location)
-  $atres = sqlStatement("select f.name,f.street,f.city,f.state,f.postal_code from facility f " .
-    " left join users u on f.id=u.facility_id " .
-    " left join  billing b on b.provider_id=u.id and b.pid = '".$stmt['pid']."' " .
-    " where  service_location=1");
-  $row = sqlFetchArray($atres);
- 
- // Facility (service location)
- 
- $clinic_name = "{$row['name']}";
- $clinic_addr = "{$row['street']}";
- $clinic_csz = "{$row['city']}, {$row['state']}, {$row['postal_code']}";
+ // Facility (service location) modified by Daniel Pflieger at Growlingflea Software
+  $service_query = sqlStatement("SELECT * FROM `form_encounter` fe join facility f on fe.facility_id = f.id where fe.id = {$stmt['fid']}");
+  $row = sqlFetchArray($service_query);
+  $clinic_name = "{$row['name']}";
+  $clinic_addr = "{$row['street']}";
+  $clinic_csz = "{$row['city']}, {$row['state']}, {$row['postal_code']}";
  
  
- // Billing location
- $remit_name = $clinic_name;
- $remit_addr = $clinic_addr;
- $remit_csz = $clinic_csz;
- 
+ // Billing location modified by Daniel Pflieger at Growlingflea Software
+ $service_query = sqlStatement("SELECT * FROM `form_encounter` fe join facility f on fe.billing_facility = f.id where fe.id = {$stmt['fid']}");
+ $row = sqlFetchArray($service_query);
+ $remit_name = "{$row['name']}";
+ $remit_addr = "{$row['street']}";
+ $remit_csz = "{$row['city']}, {$row['state']}, {$row['postal_code']}";
+
+
  // Contacts
   $atres = sqlStatement("select f.attn,f.phone from facility f " .
     " left join users u on f.id=u.facility_id " .
@@ -192,10 +191,17 @@ if ($GLOBALS['use_dunning_message']) {
  // Note that "\n" is a line feed (new line) character.
  // reformatted to handle i8n by tony
 
-$out  = sprintf("%-30s %-23s %-s\n",$clinic_name,$stmt['patient'],$stmt['today']);
-$out .= sprintf("%-30s %s: %-s\n",$clinic_addr,$label_chartnum,$stmt['pid']);
-$out .= sprintf("%-30s %-s\n",$clinic_csz,$label_insinfo);
-$out .= sprintf("%-30s %s: %-s\n",null,$label_totaldue,$stmt['amount']);
+$out  = sprintf("%-30s %-23s %-s\n",$clinic_name,null,$stmt['today']);
+$out .= sprintf("%-30s %s %-s\n",$clinic_addr,null, null);
+$out .= sprintf("%-30s %-s\n",$clinic_csz, null);
+
+
+    $out .= "\n\n";
+    $out .= sprintf("%s %s %-s\n",$stmt['patient'], null, null);
+    $out .= sprintf("%s: %s %-s\n",$label_chartnum,$stmt['pid'], null);
+    $out .= sprintf("%s  %s\n",$label_insinfo, null);
+    $out .= sprintf("%s: %s %-s\n",$label_totaldue,$stmt['amount'], null);
+
 $out .= "\n\n";
 $out .= sprintf("       %-30s %-s\n",$label_addressee,$label_remitto);
 $out .= sprintf("       %-30s %s\n",$stmt['to'][0],$remit_name);
@@ -220,7 +226,7 @@ $out .= "\n";
  
  // This must be set to the number of lines generated above.
  //
- $count = 21;
+ $count = 24;
 
  // This generates the detail lines.  Again, note that the values must
  // be specified in the order used.

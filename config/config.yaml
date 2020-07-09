@@ -174,3 +174,10 @@ assets:
         basePath: %assets_static_relative%/DataTables-1.10.18/
         script: datatables.js
         link: datatables.css
+    datatables-buttons:
+        basePath: %assets_static_relative%/Buttons-1.5.4/
+        script: js/dataTables.buttons.js
+        link:   css/buttons.dataTables.css
+    datatables-buttons-html5:
+        basePath: %assets_static_relative%/Buttons-1.5.4/
+        script:   js/buttons.html5.js

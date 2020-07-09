@@ -30,7 +30,8 @@ $form_to_date = $_POST['form_to_date'] ?  $_POST['form_to_date'] : date('Y-m-d')
     <link rel="stylesheet" href="<?php echo $css_header;?>" type="text/css">
     <title><?php xl('Appointment Status Report: ','e'); ?></title>
     <?php //call_required_libraries($library_array); ?>
-    <?php Header::setupHeader(['opener', 'report-helper', 'datatables', 'datetime-picker', 'dialog', 'jquery']); ?>
+    <?php Header::setupHeader(['opener', 'report-helper', 'datatables', 'datatables-buttons',
+        'datatables-buttons-html5', 'datetime-picker', 'dialog', 'jquery']); ?>
 
 
     <script>

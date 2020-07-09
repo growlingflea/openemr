@@ -1341,6 +1341,19 @@
             ],
             "global_req": "!disable_calendar"
           },
+            {
+                "label": "Appointment Status Change",
+                "menu_id": "rep0",
+                "target": "rep",
+                "url": "/interface/reports/appointment_status_change_report.php",
+                "children": [],
+                "requirement": 0,
+                "acl_req": [
+                    "patients",
+                    "appt"
+                ],
+                "global_req": "!disable_calendar"
+            },
           {
             "label": "Patient Flow Board",
             "menu_id": "rep0",
@@ -1954,7 +1967,7 @@
         "children": [],
         "requirement": 0,
         "global_req": "track_anything_state"
-      },      
+      },
       {
         "label": "New Documents",
         "menu_id": "adm0",

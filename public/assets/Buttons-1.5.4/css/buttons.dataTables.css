@@ -154,7 +154,7 @@ a.dt-button.active:not(.disabled):hover:not(.disabled) {
 button.dt-button:hover,
 div.dt-button:hover,
 a.dt-button:hover {
-  text-decoration: none;
+  z-decoration: none;
 }
 button.dt-button:hover:not(.disabled),
 div.dt-button:hover:not(.disabled),
@@ -362,4 +362,9 @@ a.dt-button.processing:after {
   -ms-animation: dtb-spinner 1500ms infinite linear;
   -webkit-animation: dtb-spinner 1500ms infinite linear;
   -moz-animation: dtb-spinner 1500ms infinite linear;
+}
+
+.dt-button{
+
+  color: black !important;
 }

@@ -373,7 +373,7 @@ if (isset($_SESSION['app1'])) {
     </div>
 
     <div class="body_title" id="tabs_div" data-bind="template: {name: 'tabs-controls', data: application_data}, css: responsiveDisplay.objWidth().tabsDivWidth"> </div>
-
+    <div><button id="test_button" >Button!</button></div>
     <div class="mainFrames" id="mainFrames_div" style="display: flex;" data-bind="css: responsiveDisplay.objWidth().mainFramesDivWidth  + ' ' +  responsiveDisplay.objWidth().mainFramesDivFill">
         <div id="framesDisplay" data-bind="template: {name: 'tabs-frames', data: application_data}, css: responsiveDisplay.objWidth().framesDisplayFill"> </div>
     </div>
@@ -496,6 +496,7 @@ app_view_model.responsiveDisplay = displayViewModel;
             $('#patient_caret').toggleClass('fa-caret-down').toggleClass('fa-caret-up');
         });
     });
+
 </script>
 <script>
 $(function(){
@@ -512,6 +513,11 @@ $('#anySearchBox').keypress(function(event){
 </script>
 <script>
 document.addEventListener('touchstart', {}); //specifically added for iOS devices, especially in iframes
+
+$('#test_button').click(function(){
+
+     dlgopen('../../abilities-unlimited/view.php', '_blank', 600, 600);
+});
 </script>
 
 </body>

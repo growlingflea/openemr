@@ -811,3 +811,85 @@ ALTER TABLE form_misc_billing_options CHANGE `icn_resubmission_number` `icn_resu
 #IfMissingColumn users patient_menu_role
 ALTER TABLE `users` ADD `patient_menu_role` VARCHAR(50) NOT NULL DEFAULT 'standard';
 #EndIf
+
+#IfMissingColumn immunizations NDC11
+ALTER TABLE `immunizations` add NDC11 varchar(16);
+#EndIf
+
+#IfMissingColumn immunizations GTIN
+ALTER TABLE `immunizations` add GTIN varchar(256);
+#EndIf
+
+#IfMissingColumn immunizations_schedules_codes NDC11_formatted
+ALTER TABLE `immunizations_schedules_codes` add `NDC11` varchar(13);
+#EndIF
+
+#IfMissingColumn immunizations_schedules_codes `ndc_inner_id`_formatted
+ALTER TABLE `immunizations_schedules_codes` add `ndc_inner_id` varchar(13);
+#EndIF
+
+#IfNotTable immunization_QBP_log
+CREATE TABLE `immunization_QBP_log`(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) NOT NULL,
+  `CAIRID` int(11) NOT NULL,
+  `submit_date` timestamp NOT NULL,
+  `WDSL` varchar(256) Not null,
+  `sent_message` text NOT NULL,
+  `received_message` text,
+  `error_message` varchar(256),
+
+  PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB;
+#Endif
+
+
+
+#ifNotTable printout_log
+CREATE TABLE `printout_log`(
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `pid` int(11) NOT NULL,
+   `doc_id` int(11),
+   `encounter` int(11),
+   `form_name` varchar(256) NOT NULL,
+   `user` varchar(256),
+   `printed` int(1),
+   `print_date` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB;
+#Endif
+
+#IfnotTable immunization_log
+CREATE Table `immunization_log`(
+`id` bigint(20) Not Null auto_increment,
+`immunization_id` bigint(20) not null,
+`submit_date` TIMESTAMP not null,
+`WDSL` varchar(256) not null,
+`sent_message` Text not null,
+`received_message` tinytext not null,
+`error_msg` varchar(256),
+PRIMARY KEY (`id`)
+)ENGINE=InnoDB;
+#EndIf
+
+#IfMissingColumn automatic_notification appointment_type
+ALTER TABLE `automatic_notification` ADD COLUMN appointment_type varchar(255) DEFAULT NULL;
+#EndIf
+
+#IfMissingColumn immunizations_schedules_codes ndc
+Alter Table `immunizations_schedules_codes` add column GTIN varchar (255) default NULL;
+#Endif
+
+#IfMissingColumn form_misc_billing_options epsdt_family_plan
+Alter Table `form_misc_billing_options` add column epsdt_family_plan varchar (5) default NULL;
+#Endif
+
+#IfColumn immunizations_schedules_codes
+ALTER TABLE immunizations_schedules_codes MODIFY COLUMN id INT auto_increment;
+#Endif
+
+#IfMissingColumn form_misc_billing_options send_individual_npi
+Alter Table `form_misc_billing_options` add column send_individual_npi tinyint (1) default NULL;
+#Endif

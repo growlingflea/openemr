@@ -3384,4 +3384,88 @@ $GLOBALS_METADATA = array(
         ),
 
     ),
+
+    //Adminstration menu added for CAIR2 Plug-in
+    //Daniel Pflieger daniel@mi-squared.com growlingflea@mi-squared.com
+    // Start the immunization registry
+    'IMM_REG' => array(
+
+
+
+        'IMM_sendingfacility' => array(
+            xl('IZ Portal Username / Sending Facility'),
+            'text',                           // data type
+            '',
+            xl('IZ Portal Username.  An example: DE-000116')
+        ),
+        'IMM_password' => array(
+            xl('IZ Portal Password'),
+            'pass',                           // data type
+            '',
+            xl('IZ Portal Password given to you in your email from CAIR')
+        ),
+        'IZ_portal_sending_facility_ID' => array(
+            xl('IZ Portal Sending Facility ID'),
+            'text',                           // data type
+            'CAIR',
+            xl('IZ Portal Sending Facility ID given to you in your email from CAIR')
+        ),
+        'wsdl_url' => array(
+            xl('WDSL URL'),
+            'text',                           // data type
+            'https://igs.cdph.ca.gov/submit/client_Service.wsdl',
+            xl('https://igs.cdph.ca.gov/submit/client_Service.wsdl  although it is possible for this to change.')
+        ),
+        //make dure that __DIR is in front of the cert
+        'IMM_certs' => array(
+            xl('Local Cert Location'),
+            'text',                           // data type
+            '',
+            xl('File Location of your .pem (LINUX) or .pvx (WINDOWS / MAC) certifications.  This is required for accessing CAIR registry')        ),
+        'IMM_certs_passphrase' => array(
+            xl('Local Cert passphrase'),
+            'pass',                           // data type
+            '',
+            xl('Sent in a seperate CAIR email with instructions on how to install the .pvx / .pem file')        ),
+        'IMM_receivingfacility' => array(
+            xl('Receiving Facility'),
+            'text',                           // data type
+            '',
+            xl('CAIR [Receiving] Region Code')  // next step" add choices, display to user
+        ),
+        'IMM_messageType' => array(
+            xl('Message type'),
+            'text',                           // data type
+            'VXU^V04^VXU_V04',
+            xl('Must get this value from CAIR: ')
+        ),
+        'IMM_processID' => array(
+            xl('Process ID'),
+            'text',                           // data type
+            'T',
+            xl('P for production, T for training, D for debugging ')  // next step" add choices, display to user
+        ),
+        'IMM_hl7versionID' => array(
+            xl('Version'),
+            'text',                           // data type
+            '2.5.1',
+            xl('2.5.1')  // next step" add choices, display to user
+        ),
+        'IMM_CAIR_ID' => array(
+            xl('CAIR ID'),
+            'text',                           // data type
+            '',
+            xl('CAIR Site ID ')  // next step" add choices, display to user
+        ),
+
+
+
+
+
+    ),
+// Immunization End
+
+
+
+
 );

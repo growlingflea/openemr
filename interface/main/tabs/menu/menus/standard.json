@@ -938,6 +938,58 @@
         ],
         "global_req": "ippf_specific"
       },
+
+      {
+        "label":"SMS Reminder Tool",
+        "menu_id":"adm0",
+        "children":
+        [
+
+
+
+
+      {
+        "label":"Immunizations",
+        "menu_id":"adm0",
+        "children":[
+
+
+          {
+            "label":"Codes",
+            "menu_id":"adm0",
+            "target":"adm",
+            "url":"/interface/immunizations/codes.php",
+            "children":[],
+            "requirement":0,
+            "acl_req":[
+              "admin",
+              "users"
+            ]},
+
+          {
+            "label":"Schedules",
+            "menu_id":"adm0",
+            "target":"adm",
+            "url":"/interface/immunizations/schedules.php",
+            "children":[],
+            "requirement":0,
+            "acl_req":[
+              "admin",
+              "users"
+            ]}],
+
+        "requirement":0,
+        "acl_req":[
+          "admin",
+          "users"
+        ]
+
+      },
+
+
+
+
+
       {
         "label": "Other",
         "icon": "fa-caret-right",
@@ -1216,6 +1268,37 @@
               "patients",
               "med"
             ]
+          },
+          {
+            "label": "CAIR Reporting",
+            "icon": "fa-caret-right",
+
+            "children": [
+              {
+
+                "label": "CAIR Immunization Registry",
+                "menu_id": "rep0",
+                "target": "rep",
+                "url": "/interface/reports/immunization_report_CAIR.php",
+                "requirement": 0,
+                "acl_req": [
+                  "patients",
+                  "med"
+                ]
+
+              },
+              {
+
+                "label": "CAIR Duplicate Matching",
+                "menu_id": "rep0",
+                "target": "rep1",
+                "url": "/interface/reports/immunization_report_CAIR_multimatched_errors.php",
+                "requirement": 0,
+                "acl_req": [
+                  "patients",
+                  "med"
+                ]
+
           }
         ],
         "requirement": 0

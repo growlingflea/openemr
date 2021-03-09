@@ -938,53 +938,43 @@
         ],
         "global_req": "ippf_specific"
       },
-
-      {
-        "label":"SMS Reminder Tool",
-        "menu_id":"adm0",
-        "children":
-        [
-
-
-
-
-      {
-        "label":"Immunizations",
-        "menu_id":"adm0",
-        "children":[
-
-
-          {
-            "label":"Codes",
+        {
+            "label":"Immunizations",
             "menu_id":"adm0",
-            "target":"adm",
-            "url":"/interface/immunizations/codes.php",
-            "children":[],
+            "children":[
+
+
+                {
+                    "label":"Codes",
+                    "menu_id":"adm0",
+                    "target":"adm",
+                    "url":"/interface/immunizations/codes.php",
+                    "children":[],
+                    "requirement":0,
+                    "acl_req":[
+                        "admin",
+                        "users"
+                    ]},
+
+                {
+                    "label":"Schedules",
+                    "menu_id":"adm0",
+                    "target":"adm",
+                    "url":"/interface/immunizations/schedules.php",
+                    "children":[],
+                    "requirement":0,
+                    "acl_req":[
+                        "admin",
+                        "users"
+                    ]}],
+
             "requirement":0,
             "acl_req":[
-              "admin",
-              "users"
-            ]},
+                "admin",
+                "users"
+            ]
 
-          {
-            "label":"Schedules",
-            "menu_id":"adm0",
-            "target":"adm",
-            "url":"/interface/immunizations/schedules.php",
-            "children":[],
-            "requirement":0,
-            "acl_req":[
-              "admin",
-              "users"
-            ]}],
-
-        "requirement":0,
-        "acl_req":[
-          "admin",
-          "users"
-        ]
-
-      },
+        },
 
 
 
@@ -1269,37 +1259,44 @@
               "med"
             ]
           },
-          {
-            "label": "CAIR Reporting",
-            "icon": "fa-caret-right",
+            {
+                "label": "CAIR Reporting",
+                "icon": "fa-caret-right",
 
-            "children": [
-              {
+                "children": [
+                    {
 
-                "label": "CAIR Immunization Registry",
-                "menu_id": "rep0",
-                "target": "rep",
-                "url": "/interface/reports/immunization_report_CAIR.php",
+                        "label": "CAIR Immunization Registry",
+                        "menu_id": "rep0",
+                        "target": "rep",
+                        "url": "/interface/reports/immunization_report_CAIR.php",
+                        "requirement": 0,
+                        "acl_req": [
+                            "patients",
+                            "med"
+                        ]
+
+                    },
+                    {
+
+                        "label": "CAIR Duplicate Matching",
+                        "menu_id": "rep0",
+                        "target": "rep1",
+                        "url": "/interface/reports/immunization_report_CAIR_multimatched_errors.php",
+                        "requirement": 0,
+                        "acl_req": [
+                            "patients",
+                            "med"
+                        ]
+
+                    }
+                ],
                 "requirement": 0,
                 "acl_req": [
-                  "patients",
-                  "med"
+                    "patients",
+                    "med"
                 ]
-
-              },
-              {
-
-                "label": "CAIR Duplicate Matching",
-                "menu_id": "rep0",
-                "target": "rep1",
-                "url": "/interface/reports/immunization_report_CAIR_multimatched_errors.php",
-                "requirement": 0,
-                "acl_req": [
-                  "patients",
-                  "med"
-                ]
-
-          }
+            }
         ],
         "requirement": 0
       },
@@ -1376,6 +1373,25 @@
             ],
             "global_req": "enable_amc_tracking"
           },
+          {
+            "label":"VFC Immunization Reporting",
+            "menu_id":"rep0",
+            "target":"rep",
+            "url":"/interface/reports/vfc_immunization_report.php",
+            "children":[],
+            "requirement":0
+
+          },
+          {
+            "label":"End of Year VFC Immunization Reporting",
+            "menu_id":"rep0",
+            "target":"rep",
+            "url":"/interface/reports/end_of_year_VFC_report.php",
+            "children":[],
+            "requirement":0
+
+          },
+
           {
             "label": "Alerts Log",
             "menu_id": "rep0",

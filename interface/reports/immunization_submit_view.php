@@ -1,39 +1,25 @@
 <?php
-/**
- * This report lists  patient immunizations for a given date range.
- *
- * @package   OpenEMR
- * @link      http://www.open-emr.org
- * @author    Brady Miller <brady.g.miller@gmail.com>
- * @copyright Copyright (c) 2011 Ensoftek Inc.
- * @copyright Copyright (c) 2017 Brady Miller <brady.g.miller@gmail.com>
- * @copyright Copyright (c) 2019 Daniel Pflieger <daniel@growlingflea.com>  Providing plug in for CAIR interface
- * @license   https://github.com/openemr/openemr/blob/master/LICENSE GNU General Public License 3
- */
+// Copyright (C) 2011 Ensoftek Inc.
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
 
+// This report lists  patient immunizations for a given date range.
 
+//addition for CAIR plug-in made by Daniel Pflieger, daniel@mi-squared.com
 //Changed made on 4-5-2017 to meet new requirements for TLS1.2:
 
 require_once("../globals.php");
 require_once("$srcdir/sql.inc");
 require_once("$srcdir/patient.inc");
 require_once("$srcdir/formatting.inc.php");
-require_once("$srcdir/CAIRsoap.php"); //necessary for communicating with CAIR
+require_once("$srcdir/CAIRsoap.php");
 
-use OpenEMR\Core\Header;
-$form_from_date = (isset($_POST['form_from_date'])) ? DateToYYYYMMDD($_POST['form_from_date']) : '';
-$form_to_date   = (isset($_POST['form_to_date'])) ? DateToYYYYMMDD($_POST['form_to_date']) : '';
 
 //brought in
-function tr($a)
-{
-
-    return (str_replace(' ','^',$a));
-}
-
-//Added for CAIR plug-in
-function get_string_between($string, $start, $end)
-{
+function get_string_between($string, $start, $end){
     $string = ' ' . $string;
     $ini = strpos($string, $start);
     if ($ini == 0) return '';
@@ -42,7 +28,7 @@ function get_string_between($string, $start, $end)
     return substr($string, $ini, $len);
 }
 
-//Added for CAIR plug-in
+//brought in
 function duplicateImmunizationCheck($id){
 
     $query = sqlQuery("select * from immunization_log where immunization_id = ?", array($id));
@@ -52,29 +38,14 @@ function duplicateImmunizationCheck($id){
 
 }
 
-//Added for CAIR plug-in
-function getErrorsArray($responseArray)
-{
 
-    $errorArray = array();
-    foreach($responseArray as $resp) {
-
-        if(strpos($resp, 'Informational Error') === false){
-            continue;
-        }
-        $resp = explode('ERR',$resp);
-        $resp = explode('Informational Error',$resp[0]);
-        $errorArray[] = substr(trim($resp[1]), 2);
-    }
-
-    return $errorArray;
+//brought in
+function tr($a) {
+    return (str_replace(' ','^',$a));
 }
 
-
-
-
-function format_cvx_code($cvx_code)
-{
+//brought in
+function format_cvx_code($cvx_code) {
 
     if ( $cvx_code < 10 ) {
         return "0$cvx_code";
@@ -83,6 +54,7 @@ function format_cvx_code($cvx_code)
     return $cvx_code;
 }
 
+//brought in
 function format_phone($phone) {
 
     $phone = preg_replace("/[^0-9]/", "", $phone);
@@ -97,6 +69,7 @@ function format_phone($phone) {
     }
 }
 
+//brought in
 function format_ethnicity($ethnicity) {
 
     switch ($ethnicity)
@@ -109,8 +82,22 @@ function format_ethnicity($ethnicity) {
             return ("U^Unknown^HL70189");
     }
 }
+ //brought in
+function getErrorsArray($responseArray) {
 
+    $errorArray = array();
+    foreach($responseArray as $resp) {
 
+        if(strpos($resp, 'Informational Error') === false){
+            continue;
+        }
+        $resp = explode('ERR',$resp);
+        $resp = explode('Informational Error',$resp[0]);
+        $errorArray[] = substr(trim($resp[1]), 2);
+    }
+
+    return $errorArray;
+}
 
 $IMM = array('username' => $GLOBALS['IMM_sendingfacility'],
     'password' => $GLOBALS['IMM_password'],
@@ -133,16 +120,44 @@ try {
 }
 
 
+if(isset($_POST['form_from_date'])) {
+    $from_date = $_POST['form_from_date'] !== "" ?
+        fixDate($_POST['form_from_date'], date('Y-m-d')) :
+        0;
+}else{
+
+    fixDate($_POST['form_from_date'], date('Y-m-d'));
+}
+
+if(isset($_POST['form_to_date'])) {
+    $to_date =$_POST['form_to_date'] !== "" ?
+        fixDate($_POST['form_to_date'], date('Y-m-d')) :
+        date('Y-m-d');
+}else{
+
+    fixDate($_POST['form_to_date'], date('Y-m-d'));
+}
+//
+$form_code = isset($_POST['form_code']) ? $_POST['form_code'] : Array();
+//
+if (empty ($form_code) ) {
+    $query_codes = '';
+} else {
+    $query_codes = 'c.id in (';
+    foreach( $form_code as $code ){ $query_codes .= $code . ","; }
+    $query_codes = substr($query_codes ,0,-1);
+    $query_codes .= ') and ';
+}
 
 
 
-$sqlBindArray = array();
+
 $query =
     "select " .
     "i.patient_id as patientid, " .
     "p.language, ".
     "i.cvx_code , " ;
-if ($_POST['submit_to_CAIR']==='true') { //This is for sending to CAIR.
+if ($_POST['submit_to_CAIR']==='true') {
     $query .=
         "DATE_FORMAT(p.DOB,'%Y%m%d') as DOB, ".
         "concat(p.street, '^^', p.city, '^', p.state, '^', p.postal_code) as address, ".
@@ -160,16 +175,15 @@ if ($_POST['submit_to_CAIR']==='true') { //This is for sending to CAIR.
         "DATE_FORMAT(i.vis_date,'%Y%m%d') as immunizationdate, ".
         "DATE_FORMAT(i.administered_date,'%Y%m%d') as administered_date, ".
         "i.lot_number as lot_number, ".
-        "i.manufacturer as manufacturer, " .
-        "i.vfc, i.historical, " . //Altered for CAIR requirements
-        "concat(p.lname, '^', p.fname) as patientname, "; //Altered for CAIR requirements
+        "i.manufacturer as manufacturer, i.vfc, i.historical, ".
+        "concat(p.lname, '^', p.fname) as patientname, ";
 } else {
-    $query .= "concat(p.lname, ' ',p.mname,' ', p.fname) as patientname, ". //Altered for CAIR requirements
-        "i.vis_date as immunizationdate, DATE_FORMAT(i.administered_date,'%Y-%m-%d') as administered_date, "  ; //Altered for CAIR requirements
+    $query .= "concat(p.lname, ' ',p.mname,' ', p.fname) as patientname, ".
+        "i.vis_date as immunizationdate, DATE_FORMAT(i.administered_date,'%Y-%m-%d') as administered_date, "  ;
 }
 $query .=
-    "i.id as immunizationid, c.code_text_short as immunizationtitle ".
-    ", i.route as route, i.administration_site as site, i.update_date, i.submitted ". //Altered for CAIR
+    "i.id as immunizationid, c.code_text_short as immunizationtitle, ".
+    "i.route as route, i.administration_site as site, i.update_date, i.submitted ".
     "from immunizations i, patient_data p, codes c ".
     "left join code_types ct on c.code_type = ct.ct_id ".
     "where ".
@@ -189,11 +203,11 @@ if($_POST['immunization_id'] != ""){
 
 
 
-        $query .= " DATE_FORMAT(i.administered_date,'%Y-%m-%d') >= '$form_from_date' ";
+        $query .= " DATE_FORMAT(i.administered_date,'%Y-%m-%d') >= '$from_date' ";
 
         $query .= " and ";
 
-        $query .= "DATE_FORMAT(i.administered_date,'%Y-%m-%d') <= '$form_to_date' and ";
+        $query .= "DATE_FORMAT(i.administered_date,'%Y-%m-%d') <= '$to_date' and ";
 
 }
 
@@ -202,7 +216,7 @@ $query .=  "i.added_erroneously = 0";
 
 
 
-
+//echo "<p> DEBUG query: $query </p>\n"; // debugging
 
 
 $D="\r";
@@ -211,6 +225,13 @@ $nowdate = date('Ymdhms');
 $now = date('YmdGi');
 $now1 = date('Y-m-d G:i');
 $filename = "imm_reg_". $now . ".hl7";
+
+// GENERATE HL7 FILE
+// Initalize variables.
+
+//These can be removed once globals is set up.
+
+
 
 if ($_POST['submit_to_CAIR']==='true') {
     $content = '';
@@ -272,38 +293,38 @@ if ($_POST['submit_to_CAIR']==='true') {
             $r['patientid']. "^^^SantiagoPeds^PI" . "|". // 3. (R) Patient indentifier list. OK
             "|" . // 4. (B) Alternate PID
             $r['patientname']."|" . // 5.R. Name OK
-            "|" . // 6. Mother Maiden Name OK
+            "|" . // 6. Mather Maiden Name OK
             $r['DOB']."|" . // 7. Date, time of birth OK
             $r['sex']."|" . // 8. Sex OK
             "|" . // 9.B Patient Alias OK
             "2106-3^" . $r['race']. "^HL70005" . "|" . // 10. Race // Ram change
             $r['address'] . "^^M" . "|" . // 11. Address. Default to address type  Mailing Address(M)
             "|" . // 12. county code
-            "^PRN^^^^" . format_phone($r['phone_home']) . "|" . // 13. Phone Home. Default to Primary Home Number(PRN)
-            "^WPN^^^^" . format_phone($r['phone_biz']) . "|" . // 14. Phone Work.
-            "|" . // 15. Primary language
-            $r['status']."|" . // 16. Marital status
-            "|" . // 17. Religion
-            "|" . // 18. patient Account Number
-            "|" . // 19.B SSN Number
-            "|" . // 20.B Driver license number
-            "|" . // 21. Mothers Identifier
-            "^^|" . // 22. Ethnic Group
-            "|" . // 23. Birth Plase
-            "|" . // 24. Multiple birth indicator
-            "|" . // 25. Birth order
-            "|" . // 26. Citizenship
-            "|" . // 27. Veteran military status
-            "|" . // 28.B Nationality
-            "|" . // 29. Patient Death Date and Time
-            "|" . // 30. Patient Death Indicator
-            "|" . // 31. Identity Unknown Indicator
-            "|" . // 32. Identity Reliability Code
-            "|" . // 33. Last Update Date/Time
-            "|" . // 34. Last Update Facility
-            "|" . // 35. Species Code
-            "|" . // 36. Breed Code
-            $D;
+        "^PRN^^^^" . format_phone($r['phone_home']) . "|" . // 13. Phone Home. Default to Primary Home Number(PRN)
+        "^WPN^^^^" . format_phone($r['phone_biz']) . "|" . // 14. Phone Work.
+        "|" . // 15. Primary language
+        $r['status']."|" . // 16. Marital status
+        "|" . // 17. Religion
+        "|" . // 18. patient Account Number
+        "|" . // 19.B SSN Number
+        "|" . // 20.B Driver license number
+        "|" . // 21. Mothers Identifier
+        "^^|" . // 22. Ethnic Group
+        "|" . // 23. Birth Plase
+        "|" . // 24. Multiple birth indicator
+        "|" . // 25. Birth order
+        "|" . // 26. Citizenship
+        "|" . // 27. Veteran military status
+        "|" . // 28.B Nationality
+        "|" . // 29. Patient Death Date and Time
+        "|" . // 30. Patient Death Indicator
+        "|" . // 31. Identity Unknown Indicator
+        "|" . // 32. Identity Reliability Code
+        "|" . // 33. Last Update Date/Time
+        "|" . // 34. Last Update Facility
+        "|" . // 35. Species Code
+        "|" . // 36. Breed Code
+        $D;
 
         //PD1
         if (!isset($r['data_sharing']))
@@ -429,6 +450,8 @@ if ($_POST['submit_to_CAIR']==='true') {
 
         $content_str .= $first ? $content : "\n\n" . $delimiter . "\n\n" . $content;
         $first = false;
+
+
     }
 
 
@@ -532,7 +555,7 @@ if ($_POST['submit_to_CAIR']==='true') {
 <html>
 <head>
     <?php html_header_show();?>
-    <title><?php xl('CAIR Portal: ','e'); ?></title>
+    <title><?php xl('CAIR Portal: Submission','e'); ?></title>
     <style type="text/css">@import url(../../library/dynarch_calendar.css);</style>
     <script type="text/javascript" src="../../library/dialog.js"></script>
     <script type="text/javascript" src="../../library/textformat.js"></script>
@@ -593,7 +616,7 @@ if ($_POST['submit_to_CAIR']==='true') {
     <?php echo date("d F Y", strtotime($form_from_date)) ." &nbsp; to &nbsp; ". date("d F Y", strtotime($form_to_date)); ?>
 </div>
 <div name="display_wdsl" id="display_wdsl"><?php echo $cairSOAP->displayTargetWdsl() ?></div>
-<form name='theform' id='theform' method='post' action='immunization_report.php'
+<form name='theform' id='theform' method='post' action='immunization_submit_view.php'
       onsubmit='return top.restoreSession()'>
     <div id="report_parameters">
         <input type='hidden' name='form_refresh' id='form_refresh' value=''/>
@@ -707,6 +730,13 @@ if ($_POST['submit_to_CAIR']==='true') {
                                     <?php } ?>
                                 </div>
                             </td>
+                            <td></td>
+                            <td>
+                                <p>Alert:  Improvements comming soon! </p>
+                                <p>Improved Reporting and Immediate submission of immunizations when saved!!</p>
+                                <p>The ability to query CAIR and get patients CAIR history using OpenEMR coming soon too!!</p>
+
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -778,6 +808,21 @@ if ($_POST['form_refresh'] && $_POST['immunizations']) {
                 </tr>
                 <?php
                 ++$total;
+
+
+                $HL7msg = CAIRsoap::gen_HL7_CAIR_QBP($row['patientid']);
+                try {
+                    $cairResponse = $cairSOAP->submitSingleMessage($HL7msg);
+
+                } catch (Exception $e) {
+                    echo $e->getMessage();
+
+                    exit;
+                }
+                //get info about rejected patient
+                $response = explode("|", $cairResponse->return);
+                $errorsArray = getErrorsArray($response);
+                //***IBH TESTING COMPLETE
             }
             ?>
             <tr class="report_totals">

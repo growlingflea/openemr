@@ -31,7 +31,7 @@ function tr($a)
     return (str_replace(' ', '^', $a));
 }
 
-function format_cvx_code($cvx_code)
+function format_cvx_code($cvx_code): string
 {
 
     if ($cvx_code < 10) {
@@ -55,7 +55,7 @@ function format_phone($phone)
     }
 }
 
-function format_ethnicity($ethnicity)
+function format_ethnicity($ethnicity): string
 {
 
     switch ($ethnicity) {
@@ -85,6 +85,7 @@ if (!empty($_POST['form_get_hl7']) && ($_POST['form_get_hl7'] === 'true')) {
         "p.sex, " .
         "p.ethnoracial, " .
         "p.race, " .
+        "lo.notes as race_code, " .
         "p.ethnicity, " .
         "c.code_text, " .
         "c.code, " .
@@ -103,6 +104,7 @@ $query .=
     "i.id as immunizationid, c.code_text_short as immunizationtitle " .
     "from immunizations i, patient_data p, codes c " .
     "left join code_types ct on c.code_type = ct.ct_id " .
+    "left join list_options lo on p.race = lo.option_id and lo.activity = 1 and lo.list_id = race " .
     "where " .
     "ct.ct_key='CVX' and ";
 
@@ -185,6 +187,12 @@ if (!empty($_POST['form_get_hl7']) && ($_POST['form_get_hl7'] === 'true')) {
             $r['status'] = 'P';
         }
 
+        //Some organizations like CAIR require this field to be not blank so we need a default value
+        if ($r['race_code'] == null) {
+
+            $r['race_code'] = "2106-3";
+        }
+
         $content .= "PID|" . // [[ 3.72 ]]
             "|" . // 1. Set id
             "|" . // 2. (B)Patient id
@@ -195,7 +203,7 @@ if (!empty($_POST['form_get_hl7']) && ($_POST['form_get_hl7'] === 'true')) {
             $r['DOB'] . "|" . // 7. Date, time of birth
             $r['sex'] . "|" . // 8. Sex
             "|" . // 9.B Patient Alias
-            "2106-3^" . $r['race'] . "^HL70005" . "|" . // 10. Race // Ram change
+            $r['race_code'] ."^" . $r['race'] . "^HL70005" . "|" . // 10. Race // Ram change
             $r['address'] . "^^M" . "|" . // 11. Address. Default to address type  Mailing Address(M)
             "|" . // 12. county code
             "^PRN^^^^" . format_phone($r['phone_home']) . "|" . // 13. Phone Home. Default to Primary Home Number(PRN)
